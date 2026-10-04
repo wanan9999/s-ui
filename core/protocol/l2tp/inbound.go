@@ -152,10 +152,10 @@ func newSessionDevice(ctx context.Context, i *Inbound, user string, address neti
 		d.Close()
 		return nil, err
 	}
+	d.stack = stack
 	if err = stack.Start(); err != nil {
 		d.Close()
 		return nil, fmt.Errorf("l2tp: start userspace stack: %w", err)
 	}
-	d.stack = stack
 	return d, nil
 }

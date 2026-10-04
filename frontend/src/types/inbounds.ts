@@ -213,6 +213,7 @@ export interface TProxy extends InboundBasics {
 
 // Create interfaces dynamically based on InTypes keys
 type InterfaceMap = {
+  l2tp: L2TP
   direct: Direct
   mixed: Mixed
   socks: SOCKS
@@ -235,7 +236,7 @@ type InterfaceMap = {
 }
 
 // Create union type from InterfaceMap
-export type Inbound = L2TP | InterfaceMap[keyof InterfaceMap]
+export type Inbound = InterfaceMap[keyof InterfaceMap]
 
 // Create defaultValues object dynamically
 const defaultValues: Record<InType, Inbound> = {

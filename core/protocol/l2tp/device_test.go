@@ -70,7 +70,7 @@ func TestSessionStackTCPUDPAndIdentity(t *testing.T) {
 	defer cancel()
 	router := &echoRouter{events: make(chan adapter.InboundContext, 8)}
 	in := &Inbound{Adapter: inbound.NewAdapter(Type, "vpn"), ctx: ctx, router: router, logger: log.NewNOPFactory().Logger()}
-	// Reuse the same inner IP concurrently in independent stacks. Their user
+	// Reuse the same inner IP in successive independent stacks. Their user
 	// identities and flows must remain separate even with identical addresses.
 	for _, user := range []string{"alice", "bob"} {
 		t.Run(user, func(t *testing.T) {
