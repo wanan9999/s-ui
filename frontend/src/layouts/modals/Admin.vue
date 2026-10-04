@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="400"
   >
     <v-card class="rounded-lg">

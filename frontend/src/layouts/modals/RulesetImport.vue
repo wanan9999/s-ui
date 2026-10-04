@@ -22,7 +22,7 @@
         </v-row>
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <v-tabs
           v-model="tab"
           @update:model-value="tabChanged"

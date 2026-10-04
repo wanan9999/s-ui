@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="HTTP">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="HTTP"
+  >
     <v-row>
       <v-col
         cols="12"

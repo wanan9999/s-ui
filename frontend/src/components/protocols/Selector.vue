@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Selector">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Selector"
+  >
     <v-row>
       <v-col
         cols="12"

@@ -2,21 +2,40 @@
   <v-navigation-drawer
     v-model="showDrawer"
     :temporary="isMobile"
-    :expand-on-hover="!isMobile"
-    :rail="!isMobile"
+    :rail="!isMobile && rail"
     :permanent="!isMobile"
-    @click="isMobile ? $emit('toggleDrawer') : null"
+    :width="232"
+    class="app-navigation"
   >
     <v-list-item
-      height="63"
-      prepend-avatar="@/assets/logo.svg"
+      height="72"
       title="S-UI"
+      class="app-brand"
     >
+      <template #prepend>
+        <v-avatar
+          color="primary"
+          variant="tonal"
+          rounded="lg"
+          size="36"
+        >
+          <v-icon
+            icon="mdi-lan"
+            size="22"
+          />
+        </v-avatar>
+      </template>
       <template
         v-if="isMobile"
         #append
       >
-        <v-icon icon="mdi-close" />
+        <v-btn
+          icon="mdi-close"
+          variant="text"
+          size="small"
+          :aria-label="$t('actions.close')"
+          @click="$emit('update:displayDrawer', false)"
+        />
       </template>
     </v-list-item>
 
@@ -25,6 +44,7 @@
     <v-list
       density="compact"
       nav
+      class="navigation-list"
     >
       <v-list-item
         v-for="item in menu"
@@ -32,9 +52,15 @@
         link
         :to="item.path"
         :active="router.currentRoute.value.path == item.path"
+        color="primary"
+        rounded="lg"
+        @click="isMobile ? $emit('update:displayDrawer', false) : null"
       >
         <template #prepend>
-          <v-icon :icon="item.icon" />
+          <v-icon
+            :icon="item.icon"
+            size="20"
+          />
         </template>
         <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
       </v-list-item>
@@ -54,11 +80,14 @@ import { computed } from 'vue'
 import router from '@/router'
 import { logout } from '@/plugins/httputil'
 
-const props = defineProps<{ isMobile: boolean, displayDrawer: boolean }>()
-defineEmits<{ toggleDrawer: [] }>()
+const props = defineProps<{ isMobile: boolean, displayDrawer: boolean, rail: boolean }>()
+const emit = defineEmits<{ 'update:displayDrawer': [visible: boolean] }>()
 
-const showDrawer = computed((): boolean => {
-  return props.displayDrawer
+const showDrawer = computed({
+  get: () => props.displayDrawer,
+  set: (visible: boolean) => {
+    emit('update:displayDrawer', visible)
+  },
 })
 
 const menu = [

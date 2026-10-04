@@ -25,13 +25,13 @@ const theme = computed(() =>{
   let currenTheme = Theme.global.name.value == "light" ? pastelTheme : darkTheme
   currenTheme = {
     ...currenTheme,
-    '--nv-width': 'auto',
+    '--nv-width': 'min(420px, calc(100vw - 32px))',
   }
   return currenTheme
 })
 
 const direction = computed(() => {
-  return vuetify.locale.isRtl ? 'rtl' : 'ltr'
+  return vuetify.locale.isRtl.value ? 'rtl' : 'ltr'
 })
 </script>
 

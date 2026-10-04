@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="400"
   >
     <v-card
@@ -28,7 +28,7 @@
         type="text, image, divider, text, image"
       />
       <v-card-text
-        style="overflow-y: auto; padding: 0"
+        style="overflow-y: auto;"
         :hidden="loading"
       >
         <v-tabs

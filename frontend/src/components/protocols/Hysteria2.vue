@@ -1,6 +1,11 @@
 <template>
-  <v-card subtitle="Hysteria2">
-    <v-row>
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Hysteria2"
+  >
+    <v-row v-if="(direction == 'in') || (!data.ignore_client_bandwidth) || (!data.ignore_client_bandwidth)">
       <v-col
         v-if="direction == 'in'"
         cols="12"
@@ -45,9 +50,9 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(data.obfs != undefined)">
       <v-col
-        v-if="data.obfs != undefined"
+
         cols="12"
         sm="6"
         md="4"
@@ -62,6 +67,9 @@
     <template v-if="direction == 'in'">
       <v-card
         v-if="data.masquerade != undefined"
+        :border="false"
+        class="form-section"
+        rounded="0"
         subtitle="Hysteria2 Masquerade"
       >
         <v-row>
@@ -209,8 +217,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -221,38 +229,37 @@
             {{ $t('types.hy.hy2Options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionObfs"
+              color="primary"
+              :label="$t('types.hy.obfs')"
+              hide-details
+            />
+          </v-list-item>
+          <template v-if="direction == 'in'">
             <v-list-item>
               <v-switch
-                v-model="optionObfs"
+                v-model="optionMasq"
                 color="primary"
-                :label="$t('types.hy.obfs')"
+                label="Masquerade"
                 hide-details
               />
             </v-list-item>
-            <template v-if="direction == 'in'">
-              <v-list-item>
-                <v-switch
-                  v-model="optionMasq"
-                  color="primary"
-                  label="Masquerade"
-                  hide-details
-                />
-              </v-list-item>
-            </template>
-            <template v-else>
-              <v-list-item>
-                <v-switch
-                  v-model="optionMPort"
-                  color="primary"
-                  :label="$t('rule.portRange')"
-                  hide-details
-                />
-              </v-list-item>
-            </template>
-          </v-list>
-        </v-card>
+          </template>
+          <template v-else>
+            <v-list-item>
+              <v-switch
+                v-model="optionMPort"
+                color="primary"
+                :label="$t('rule.portRange')"
+                hide-details
+              />
+            </v-list-item>
+          </template>
+        </v-list>
       </v-menu>
     </v-card-actions>
     <QuicFields

@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="URL Test">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="URL Test"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -15,9 +20,9 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionUrl)">
       <v-col
-        v-if="optionUrl"
+
         cols="12"
         sm="6"
       >
@@ -28,7 +33,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionInterval) || (optionTolerance) || (optionIdle)">
       <v-col
         v-if="optionInterval"
         cols="12"
@@ -92,8 +97,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -104,42 +109,41 @@
             {{ $t('types.lb.urlTestOptions') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionUrl"
-                color="primary"
-                :label="$t('types.lb.testUrl')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionInterval"
-                color="primary"
-                :label="$t('types.lb.interval')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionTolerance"
-                color="primary"
-                :label="$t('types.lb.tolerance')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionIdle"
-                color="primary"
-                :label="$t('transport.idleTimeout')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionUrl"
+              color="primary"
+              :label="$t('types.lb.testUrl')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionInterval"
+              color="primary"
+              :label="$t('types.lb.interval')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionTolerance"
+              color="primary"
+              :label="$t('types.lb.tolerance')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionIdle"
+              color="primary"
+              :label="$t('transport.idleTimeout')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card class="rounded-lg">
@@ -10,7 +10,7 @@
         <DocLink section="tls" />
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <v-card class="rounded-lg">
           <v-row>
             <v-col
@@ -556,8 +556,8 @@
             <v-spacer />
             <v-menu
               v-model="menu"
+              width="320"
               :close-on-content-click="false"
-              location="start"
             >
               <template #activator="{ props }">
                 <v-btn
@@ -568,110 +568,109 @@
                   {{ $t('tls.options') }}
                 </v-btn>
               </template>
-              <v-card>
-                <v-list>
-                  <template v-if="tlsType == 0">
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionSNI"
-                        color="primary"
-                        label="SNI"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionALPN"
-                        color="primary"
-                        label="ALPN"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionMinV"
-                        color="primary"
-                        :label="$t('tls.minVer')"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionMaxV"
-                        color="primary"
-                        :label="$t('tls.maxVer')"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionCS"
-                        color="primary"
-                        :label="$t('tls.cs')"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionFP"
-                        color="primary"
-                        label="UTLS"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionClientAuth"
-                        color="primary"
-                        :label="$t('tls.mutual')"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionStore"
-                        color="primary"
-                        :label="$t('tls.store')"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionKtls"
-                        color="primary"
-                        :label="$t('tls.ktls')"
-                        hide-details
-                      />
-                    </v-list-item>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionSpoof"
-                        color="primary"
-                        :label="$t('tls.spoof')"
-                        hide-details
-                      />
-                    </v-list-item>
-                  </template>
-                  <template v-else>
-                    <v-list-item>
-                      <v-switch
-                        v-model="optionTime"
-                        color="primary"
-                        label="Max Time Difference"
-                        hide-details
-                      />
-                    </v-list-item>
-                  </template>
+
+              <v-list>
+                <template v-if="tlsType == 0">
                   <v-list-item>
                     <v-switch
-                      v-model="optionHandshake"
+                      v-model="optionSNI"
                       color="primary"
-                      :label="$t('tls.handshakeTimeout')"
+                      label="SNI"
                       hide-details
                     />
                   </v-list-item>
-                </v-list>
-              </v-card>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionALPN"
+                      color="primary"
+                      label="ALPN"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionMinV"
+                      color="primary"
+                      :label="$t('tls.minVer')"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionMaxV"
+                      color="primary"
+                      :label="$t('tls.maxVer')"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionCS"
+                      color="primary"
+                      :label="$t('tls.cs')"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionFP"
+                      color="primary"
+                      label="UTLS"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionClientAuth"
+                      color="primary"
+                      :label="$t('tls.mutual')"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionStore"
+                      color="primary"
+                      :label="$t('tls.store')"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionKtls"
+                      color="primary"
+                      :label="$t('tls.ktls')"
+                      hide-details
+                    />
+                  </v-list-item>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionSpoof"
+                      color="primary"
+                      :label="$t('tls.spoof')"
+                      hide-details
+                    />
+                  </v-list-item>
+                </template>
+                <template v-else>
+                  <v-list-item>
+                    <v-switch
+                      v-model="optionTime"
+                      color="primary"
+                      label="Max Time Difference"
+                      hide-details
+                    />
+                  </v-list-item>
+                </template>
+                <v-list-item>
+                  <v-switch
+                    v-model="optionHandshake"
+                    color="primary"
+                    :label="$t('tls.handshakeTimeout')"
+                    hide-details
+                  />
+                </v-list-item>
+              </v-list>
             </v-menu>
           </v-card-actions>
         </v-card>

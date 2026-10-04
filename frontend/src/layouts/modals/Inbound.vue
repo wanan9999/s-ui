@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
     @after-enter="updateData(id)"
   >
@@ -23,7 +23,7 @@
         width="95%"
         type="card, text, divider, list-item-two-line"
       />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <v-container
           style="padding: 0;"
           :hidden="loading"

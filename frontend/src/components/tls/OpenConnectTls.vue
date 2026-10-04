@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.tls')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.tls')"
+  >
     <!-- OpenConnect defines its own TLS options too, and names the trust anchor
          after its role rather than reusing the bare `certificate` sing-box's own
          TLS config uses. Left unset it trusts the system store, so nothing here
@@ -157,8 +162,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -169,42 +174,41 @@
             {{ $t('tls.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionMutual"
-                color="primary"
-                :label="$t('tls.mutual')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionFingerprint"
-                color="primary"
-                :label="$t('types.openvpn.tls.peerFingerprint')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionServerName"
-                color="primary"
-                :label="$t('types.openconnect.tls.serverName')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionVerify"
-                color="primary"
-                :label="$t('tls.insecure')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionMutual"
+              color="primary"
+              :label="$t('tls.mutual')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionFingerprint"
+              color="primary"
+              :label="$t('types.openvpn.tls.peerFingerprint')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionServerName"
+              color="primary"
+              :label="$t('types.openconnect.tls.serverName')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionVerify"
+              color="primary"
+              :label="$t('tls.insecure')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

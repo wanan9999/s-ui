@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="DERP">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="DERP"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -62,9 +67,10 @@
       <v-card
         v-for="clientUrl, index in data.verify_client_url"
         :key="index"
-        class="border"
+        :border="false"
+        class="border form-section"
+        rounded="0"
         style="padding: 8px;"
-        rounded="xl"
       >
         <v-row>
           <v-col
@@ -112,9 +118,10 @@
       <v-card
         v-for="mesh, index in data.mesh_with"
         :key="index"
-        class="border"
+        :border="false"
+        class="border form-section"
+        rounded="0"
         style="padding: 8px;"
-        rounded="xl"
       >
         <v-row>
           <v-col
@@ -214,10 +221,11 @@
     </template>
     <template v-if="optionStun">
       <v-card
+        :border="false"
         :title="$t('types.derp.stun')"
-        class="border"
+        class="border form-section"
+        rounded="0"
         style="padding: 8px;"
-        rounded="xl"
       >
         <Listen
           :data="stun"
@@ -229,8 +237,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -241,50 +249,49 @@
             {{ $t('types.derp.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionVerifyCE"
-                color="primary"
-                :label="$t('types.derp.verifyClientEndpoint')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionVerifyCU"
-                color="primary"
-                :label="$t('types.derp.verifyClientUrl')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionHome"
-                color="primary"
-                :label="$t('pages.home')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionMesh"
-                color="primary"
-                :label="$t('types.derp.meshWith')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionStun"
-                color="primary"
-                :label="$t('types.derp.stun')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionVerifyCE"
+              color="primary"
+              :label="$t('types.derp.verifyClientEndpoint')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionVerifyCU"
+              color="primary"
+              :label="$t('types.derp.verifyClientUrl')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionHome"
+              color="primary"
+              :label="$t('pages.home')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionMesh"
+              color="primary"
+              :label="$t('types.derp.meshWith')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionStun"
+              color="primary"
+              :label="$t('types.derp.stun')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

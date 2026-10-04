@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('pages.basics')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('pages.basics')"
+  >
     <v-row>
       <v-col
         v-if="type == inTypes.SOCKS"

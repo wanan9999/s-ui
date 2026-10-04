@@ -1,8 +1,9 @@
 <template>
   <v-card
+    :border="false"
     style="padding: 8px;"
-    rounded="xl"
-    class="border"
+    class="border form-section"
+    rounded="0"
   >
     <v-card-subtitle>
       Shadowsocks API

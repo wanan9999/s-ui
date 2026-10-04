@@ -11,20 +11,49 @@
   />
   <UsageStats v-model:visible="usageStatsModal.visible" />
   <v-container
-    class="fill-height"
+    fluid
+    class="pa-0"
     :loading="loading"
   >
-    <v-responsive :class="reloadItems.length>0 ? 'fill-height text-center' : 'align-center'">
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
-          <v-img
-            src="@/assets/logo.svg"
-            :width="reloadItems.length>0 ? 100 : 200"
-          />
+    <div>
+      <v-row class="mb-4">
+        <v-col
+          v-for="item in overview"
+          :key="item.label"
+          cols="12"
+          sm="6"
+          lg="3"
+        >
+          <v-card
+            :to="item.to"
+            class="h-100"
+          >
+            <v-card-text class="d-flex align-center ga-4">
+              <v-avatar
+                :color="item.color"
+                variant="tonal"
+                rounded="lg"
+                size="48"
+              >
+                <v-icon :icon="item.icon" />
+              </v-avatar>
+              <div>
+                <div class="text-medium-emphasis mb-1">
+                  {{ $t(item.label) }}
+                </div>
+                <div class="overview-value">
+                  {{ item.value }}
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
         </v-col>
       </v-row>
-      <v-row class="d-flex align-center justify-center">
-        <v-col cols="auto">
+      <v-row class="mb-4">
+        <v-col
+          cols="12"
+          class="d-flex flex-wrap ga-2"
+        >
           <v-dialog
             v-model="menu"
             :close-on-content-click="false"
@@ -36,12 +65,11 @@
                 v-bind="props"
                 hide-details
                 variant="tonal"
-                elevation="3"
               >
                 {{ $t('main.tiles') }} <v-icon icon="mdi-star-plus" />
               </v-btn>
             </template>
-            <v-card rounded="xl">
+            <v-card>
               <v-card-title>
                 <v-row>
                   <v-col>
@@ -66,6 +94,7 @@
                   <v-card
                     :subtitle="items.title"
                     variant="flat"
+                    :border="false"
                   >
                     <v-card-text>
                       <v-row density="compact">
@@ -95,8 +124,6 @@
           <v-btn
             variant="tonal"
             hide-details
-            style="margin-inline-start: 10px;"
-            elevation="3"
             @click="backupModal.visible = true"
           >
             {{ $t('main.backup.title') }}<v-icon icon="mdi-backup-restore" />
@@ -104,8 +131,6 @@
           <v-btn
             variant="tonal"
             hide-details
-            style="margin-inline-start: 10px;"
-            elevation="3"
             @click="logModal.visible = true"
           >
             {{ $t('basic.log.title') }} <v-icon icon="mdi-list-box-outline" />
@@ -113,8 +138,6 @@
           <v-btn
             variant="tonal"
             hide-details
-            style="margin-inline-start: 10px;"
-            elevation="3"
             @click="usageStatsModal.visible = true"
           >
             {{ $t('main.stats.title') }} <v-icon icon="mdi-chart-box-outline" />
@@ -127,13 +150,13 @@
           :key="i"
           cols="12"
           sm="6"
-          md="3"
+          md="6"
+          lg="4"
         >
           <v-card
             class="rounded-lg"
             variant="outlined"
-            height="210px"
-            elevation="5"
+            min-height="210"
           >
             <v-card-title>
               {{ menuItems.flatMap(cat => cat.value).find(m => m.value == i)?.title }}
@@ -143,7 +166,6 @@
                   icon="mdi-update"
                   color="primary"
                   size="small"
-                  style="margin-inline-start: 10px;"
                   @click="reloadSys()"
                 />
               </template>
@@ -155,12 +177,10 @@
                   icon="mdi-information"
                   color="primary"
                   size="small"
-                  style="margin-inline-start: 10px;"
                 />
               </template>
             </v-card-title>
             <v-card-text
-              style="padding: 0 16px;"
               align="center"
               justify="center"
             >
@@ -181,7 +201,7 @@
                   </v-col>
                   <v-col
                     cols="9"
-                    style="text-wrap: nowrap; overflow: hidden"
+                    class="text-break"
                   >
                     {{ tilesData.sys?.hostName }}
                   </v-col>
@@ -423,7 +443,7 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-responsive>
+    </div>
   </v-container>
 </template>
 
@@ -441,6 +461,16 @@ import UsageStats from '@/layouts/modals/UsageStats.vue'
 
 const loading = ref(false)
 const menu = ref(false)
+const overview = computed(() => {
+  const data = Data()
+  const count = (value: number) => data.lastLoad ? value : '—'
+  return [
+    { label: 'pages.inbounds', value: count(data.inbounds.length), icon: 'mdi-cloud-download-outline', color: 'primary', to: '/inbounds' },
+    { label: 'pages.outbounds', value: count(data.outbounds.length), icon: 'mdi-cloud-upload-outline', color: 'info', to: '/outbounds' },
+    { label: 'pages.clients', value: count(data.clients.length), icon: 'mdi-account-multiple-outline', color: 'secondary', to: '/clients' },
+    { label: 'online', value: count(data.onlines.user?.length ?? 0), icon: 'mdi-lan-connect', color: 'success', to: '/clients' },
+  ]
+})
 const menuItems = [
   { title: i18n.global.t('main.gauges'), value: [
     { title: i18n.global.t('main.gauge.cpu'), value: "g-cpu" },

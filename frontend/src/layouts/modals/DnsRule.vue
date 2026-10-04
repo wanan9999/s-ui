@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card class="rounded-lg">
@@ -10,7 +10,7 @@
         <DocLink section="dnsRule" />
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px;">
+      <v-card-text>
         <v-row>
           <v-col
             cols="12"
@@ -27,9 +27,8 @@
           <v-spacer />
           <v-col
             v-if="logical"
+            class="d-flex flex-wrap align-center justify-center ga-2"
             cols="auto"
-            justify="center"
-            align="center"
           >
             <v-btn
               color="primary"
@@ -44,7 +43,7 @@
           <v-card
             v-for="(r, ruleIndex) in ruleData.rules"
             :key="ruleIndex"
-            style="background-color: inherit; margin-bottom: 5px;"
+            style="margin-bottom: 5px;"
           >
             <v-card-subtitle>
               {{ $t('objects.rule') + ' ' + (Number(ruleIndex)+1) }}
@@ -54,7 +53,7 @@
                 @click="ruleData.rules.splice(ruleIndex,1)"
               />
             </v-card-subtitle>
-            <v-card-text style="padding: 0;">
+            <v-card-text>
               <RuleOptions
                 :rule="r"
                 :clients="clients"

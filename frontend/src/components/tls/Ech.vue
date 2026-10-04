@@ -1,7 +1,9 @@
 <template>
   <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
     subtitle="ECH"
-    style="background-color: inherit;"
   >
     <v-row>
       <v-col
@@ -77,9 +79,9 @@
           />
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="(oTls.ech)">
         <v-col
-          v-if="oTls.ech"
+
           cols="12"
           sm="6"
         >

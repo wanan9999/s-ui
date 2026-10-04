@@ -47,7 +47,6 @@
     width="auto"
   >
     <v-card
-      rounded="lg"
       :title="$t('actions.resetTraffic')"
     >
       <v-divider />
@@ -72,7 +71,8 @@
     </v-card>
   </v-dialog>
   <v-row
-    justify="center"
+    class="page-toolbar"
+    justify="start"
     align="center"
   >
     <v-col cols="auto">
@@ -226,7 +226,7 @@
         :mobile="smAndDown"
         mobile-breakpoint="sm"
         width="100%"
-        class="elevation-3 rounded"
+        class="rounded-lg"
         @update:items-per-page="setItemPerPage($event)"
       >
         <template #item.enable="{ item }">
@@ -370,7 +370,6 @@
             </template>
             <v-card
               :title="$t('actions.del')"
-              rounded="lg"
             >
               <v-divider />
               <v-card-text>{{ $t('confirm') }}</v-card-text>
@@ -483,12 +482,12 @@ const filterItems = [
 ]
 
 const headers = [
-  { title: i18n.global.t('client.name'), key: 'name' },
+  { title: i18n.global.t('client.name'), key: 'name', minWidth: 120 },
   { title: i18n.global.t('enable'), key: 'enable' },
-  { title: i18n.global.t('client.desc'), key: 'desc' },
-  { title: i18n.global.t('client.group'), key: 'group' },
-  { title: i18n.global.t('pages.inbounds'), key: 'inbounds', width: 10 },
-  { title: i18n.global.t('actions.action'), key: 'actions', sortable: false },
+  { title: i18n.global.t('client.desc'), key: 'desc', minWidth: 200 },
+  { title: i18n.global.t('client.group'), key: 'group', minWidth: 100 },
+  { title: i18n.global.t('pages.inbounds'), key: 'inbounds' },
+  { title: i18n.global.t('actions.action'), key: 'actions', sortable: false, cellProps: { class: 'text-no-wrap' } },
   { title: i18n.global.t('stats.volume'), key: 'volume' },
   { title: i18n.global.t('date.expiry'), key: 'expiry' },
   { title: i18n.global.t('online'), key: 'online' },
@@ -662,12 +661,3 @@ const percent = (c: Client) => { return c.volume>0 ? Math.round((c.up+c.down) *1
 const percentColor = (c: Client) => { return (c.up+c.down) >= c.volume ? 'error' : percent(c)>90 ? 'warning' : 'success' }
 
 </script>
-<style>
-.v-data-table__tr--mobile td {
-  height: fit-content;
-  min-height: 36px !important;
-}
-.v-data-table__tr--mobile td div {
-  width:max-content;
-}
-</style>

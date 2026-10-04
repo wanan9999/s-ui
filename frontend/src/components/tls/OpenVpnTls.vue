@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.tls')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.tls')"
+  >
     <!-- OpenVPN does not use sing-box's TLS options; it defines its own set
          with its own names, and the same name means the opposite thing on the
          two sides: on a server `certificate` is its own and `client_certificate`
@@ -346,8 +351,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -358,66 +363,65 @@
             {{ $t('tls.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item v-if="!isServer">
-              <v-switch
-                v-model="optionMutual"
-                color="primary"
-                :label="$t('tls.mutual')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionControlWrap"
-                color="primary"
-                :label="$t('types.openvpn.tls.controlWrap')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionFingerprint"
-                color="primary"
-                :label="$t('types.openvpn.tls.peerFingerprint')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="!isServer">
-              <v-switch
-                v-model="optionServerName"
-                color="primary"
-                :label="$t('types.openvpn.tls.serverName')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionCrl"
-                color="primary"
-                :label="$t('types.openvpn.tls.crlPath')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionVersions"
-                color="primary"
-                :label="$t('tls.minVer')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionProfile"
-                color="primary"
-                :label="$t('types.openvpn.tls.certificateProfile')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item v-if="!isServer">
+            <v-switch
+              v-model="optionMutual"
+              color="primary"
+              :label="$t('tls.mutual')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionControlWrap"
+              color="primary"
+              :label="$t('types.openvpn.tls.controlWrap')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionFingerprint"
+              color="primary"
+              :label="$t('types.openvpn.tls.peerFingerprint')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="!isServer">
+            <v-switch
+              v-model="optionServerName"
+              color="primary"
+              :label="$t('types.openvpn.tls.serverName')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionCrl"
+              color="primary"
+              :label="$t('types.openvpn.tls.crlPath')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionVersions"
+              color="primary"
+              :label="$t('tls.minVer')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionProfile"
+              color="primary"
+              :label="$t('types.openvpn.tls.certificateProfile')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

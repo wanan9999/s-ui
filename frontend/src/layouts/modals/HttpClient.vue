@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card class="rounded-lg">
@@ -8,7 +8,7 @@
         {{ $t('actions.' + title) + " " + $t('basic.httpClient.title') }}
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px;">
+      <v-card-text>
         <v-row>
           <v-col
             cols="12"

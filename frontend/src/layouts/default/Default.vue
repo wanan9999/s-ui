@@ -1,13 +1,13 @@
 <template>
-  <v-app style="overflow: auto;">
+  <v-app>
     <drawer
+      v-model:display-drawer="displayDrawer"
       :is-mobile="isMobile"
-      :display-drawer="displayDrawer"
-      @toggle-drawer="toggleDrawer"
+      :rail="rail"
     />
     <default-bar
       :is-mobile="isMobile"
-      @toggle-drawer="toggleDrawer"
+      @toggle-drawer="toggleNavigation"
     />
     <default-view />
   </v-app>
@@ -22,24 +22,18 @@ import { useDisplay } from 'vuetify'
 
 const { smAndDown } = useDisplay()
 const displayDrawer = ref(false)
+const rail = ref(false)
 
 const toggleDrawer = () => {
   displayDrawer.value = !displayDrawer.value
 }
 
 const isMobile = computed((): boolean => smAndDown.value)
+const toggleNavigation = () => {
+  if (isMobile.value) toggleDrawer()
+  else rail.value = !rail.value
+}
 
 // keep the drawer open on desktop and closed on mobile
 watch(smAndDown, (v) => { displayDrawer.value = !v }, { immediate: true })
 </script>
-
-<style>
-.v-card-subtitle {
-  text-align: center;
-  border-bottom: 1px solid gray;
-  min-height: 20px;
-}
-.v-switch.v-input {
-  padding-inline-start: .6rem;
-}
-</style>

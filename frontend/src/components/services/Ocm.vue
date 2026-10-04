@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="OCM (OpenAI Codex Multiplexer)">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="OCM (OpenAI Codex Multiplexer)"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -47,9 +52,10 @@
     <v-card
       v-for="(user, index) in (data.users || [])"
       :key="index"
-      class="border"
+      :border="false"
+      class="border form-section"
+      rounded="0"
       style="margin: 4px; padding: 8px;"
-      rounded="xl"
     >
       <v-row>
         <v-col

@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Shadowsocks">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Shadowsocks"
+  >
     <v-row>
       <v-col
         cols="12"

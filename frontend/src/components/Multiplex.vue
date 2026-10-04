@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.multiplex')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.multiplex')"
+  >
     <v-row>
       <v-col
         cols="12"

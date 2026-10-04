@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card class="rounded-lg">
@@ -13,7 +13,7 @@
         />
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <v-container style="padding: 0;">
           <v-tabs
             v-model="tab"
@@ -191,8 +191,8 @@
                   />
                 </v-col>
                 <v-col
+                  class="d-flex flex-wrap align-center justify-center ga-2"
                   cols="12"
-                  align="center"
                 >
                   <v-btn
                     hide-details

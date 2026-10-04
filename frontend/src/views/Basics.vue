@@ -1,9 +1,12 @@
 <template>
-  <v-row style="margin-bottom: 10px;">
+  <v-row
+    justify="start"
+    class="page-toolbar"
+    style="margin-bottom: 10px;"
+  >
     <v-col
+      class="d-flex flex-wrap align-center justify-start ga-2"
       cols="12"
-      justify="center"
-      align="center"
     >
       <v-btn
         variant="outlined"
@@ -40,8 +43,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="appConfig.log.disabled"
@@ -53,8 +56,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-select
               v-model="appConfig.log.level"
@@ -68,8 +71,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="appConfig.log.output"
@@ -80,8 +83,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="appConfig.log.timestamp"
@@ -107,8 +110,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="enableNtp"
@@ -121,8 +124,8 @@
             v-if="appConfig.ntp?.enabled"
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="appConfig.ntp.server"
@@ -134,8 +137,8 @@
             v-if="appConfig.ntp?.enabled"
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model.number="appConfig.ntp.server_port"
@@ -150,8 +153,8 @@
             v-if="appConfig.ntp?.enabled"
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="ntpInterval"
@@ -257,8 +260,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="enableCacheFile"
@@ -271,8 +274,8 @@
             v-if="appConfig.experimental.cache_file"
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="appConfig.experimental.cache_file.path"
@@ -284,8 +287,8 @@
             v-if="appConfig.experimental.cache_file"
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="appConfig.experimental.cache_file.cache_id"
@@ -297,8 +300,8 @@
             v-if="appConfig.experimental.cache_file"
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="appConfig.experimental.cache_file.store_fakeip"
@@ -317,8 +320,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="enableClashApi"
@@ -331,8 +334,8 @@
             <v-col
               cols="12"
               sm="6"
-              md="3"
-              lg="2"
+              md="4"
+              lg="3"
             >
               <v-text-field
                 v-model="appConfig.experimental.clash_api.external_controller"
@@ -343,8 +346,8 @@
             <v-col
               cols="12"
               sm="6"
-              md="3"
-              lg="2"
+              md="4"
+              lg="3"
             >
               <v-text-field
                 v-model="appConfig.experimental.clash_api.secret"
@@ -358,8 +361,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="appConfig.experimental.clash_api.external_ui"
@@ -381,8 +384,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-select
               v-model="appConfig.experimental.clash_api.external_ui_download_detour"
@@ -398,8 +401,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-text-field
               v-model="appConfig.experimental.clash_api.default_mode"
@@ -421,8 +424,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="appConfig.experimental.clash_api.access_control_allow_private_network"
@@ -441,8 +444,8 @@
           <v-col
             cols="12"
             sm="6"
-            md="3"
-            lg="2"
+            md="4"
+            lg="3"
           >
             <v-switch
               v-model="enableV2rayApi"
@@ -455,8 +458,8 @@
             <v-col
               cols="12"
               sm="6"
-              md="3"
-              lg="2"
+              md="4"
+              lg="3"
             >
               <v-text-field
                 v-model="appConfig.experimental.v2ray_api.listen"
@@ -467,8 +470,8 @@
             <v-col
               cols="12"
               sm="6"
-              md="3"
-              lg="2"
+              md="4"
+              lg="3"
             >
               <v-switch
                 v-model="appConfig.experimental.v2ray_api.stats.enabled"

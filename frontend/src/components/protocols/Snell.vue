@@ -1,5 +1,9 @@
 <template>
-  <v-card>
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+  >
     <v-card-subtitle v-if="direction != 'out_json'">
       Snell
     </v-card-subtitle>

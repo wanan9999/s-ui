@@ -7,14 +7,18 @@
     @close="enableEditor = false"
     @save="saveEditor"
   />
-  <v-card>
-    <v-row>
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+  >
+    <v-row v-if="(optionMixed) || (optionMixed)">
       <v-col
         v-if="optionMixed"
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-text-field
           v-model.number="mixedPort"
@@ -29,8 +33,8 @@
         v-if="optionMixed"
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="allowLan"
@@ -40,13 +44,13 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionExt) || (optionLog)">
       <v-col
         v-if="optionExt"
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-text-field
           v-model="externalController"
@@ -58,8 +62,8 @@
         v-if="optionLog"
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-select
           v-model="logLevel"
@@ -69,13 +73,13 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionTun) || (optionDns)">
       <v-col
         v-if="optionTun"
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="tun"
@@ -88,8 +92,8 @@
         v-if="optionDns"
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="dns"
@@ -121,8 +125,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="subClashNoDefGrp"
@@ -134,8 +138,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="subClashSprtAll"
@@ -147,8 +151,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="subClashUdp"
@@ -169,8 +173,8 @@
       </v-btn>
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -181,58 +185,57 @@
             {{ $t('setting.jsonSubOptions') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionMixed"
-                color="primary"
-                :label="$t('setting.mixedPort')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionTun"
-                color="primary"
-                :label="$t('setting.tun')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionExt"
-                color="primary"
-                :label="$t('basic.exp.extController')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionLog"
-                color="primary"
-                :label="$t('basic.log.title')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionDns"
-                color="primary"
-                :label="$t('pages.dns')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionRules"
-                color="primary"
-                :label="$t('pages.rules')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionMixed"
+              color="primary"
+              :label="$t('setting.mixedPort')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionTun"
+              color="primary"
+              :label="$t('setting.tun')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionExt"
+              color="primary"
+              :label="$t('basic.exp.extController')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionLog"
+              color="primary"
+              :label="$t('basic.log.title')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionDns"
+              color="primary"
+              :label="$t('pages.dns')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionRules"
+              color="primary"
+              :label="$t('pages.rules')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

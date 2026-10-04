@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="TUIC">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="TUIC"
+  >
     <v-row v-if="direction == 'out'">
       <v-col
         cols="12"

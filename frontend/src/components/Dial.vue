@@ -1,9 +1,11 @@
 <template>
   <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
     :subtitle="$t('objects.dial')"
-    style="background-color: inherit;"
   >
-    <v-row>
+    <v-row v-if="(optionDetour) || (optionBind)">
       <v-col
         v-if="optionDetour"
         cols="12"
@@ -30,7 +32,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionIPV4) || (optionIPV6) || (optionBindNoPort)">
       <v-col
         v-if="optionIPV4"
         cols="12"
@@ -69,7 +71,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionRM) || (optionRA)">
       <v-col
         v-if="optionRM"
         cols="12"
@@ -160,7 +162,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionUDP) || (optionCT)">
       <v-col
         v-if="optionUDP"
         cols="12"
@@ -208,8 +210,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -220,106 +222,105 @@
             {{ $t('dial.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionDetour"
-                color="primary"
-                :label="$t('listen.detour')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionBind"
-                color="primary"
-                :label="$t('dial.bindIf')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionIPV4"
-                color="primary"
-                :label="$t('dial.bindIp4')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionIPV6"
-                color="primary"
-                :label="$t('dial.bindIp6')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionBindNoPort"
-                color="primary"
-                :label="$t('dial.bindNoPort')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionRM"
-                color="primary"
-                label="Routing Mark"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionRA"
-                color="primary"
-                :label="$t('dial.reuseAddr')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionTCP"
-                color="primary"
-                :label="$t('listen.tcpOptions')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionUDP"
-                color="primary"
-                :label="$t('listen.udpOptions')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionCT"
-                color="primary"
-                :label="$t('dial.connTimeout')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionTcpKeepAlive"
-                color="primary"
-                :label="$t('dial.tcpKeepAlive')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="mode != 'client'">
-              <v-switch
-                v-model="optionDR"
-                color="primary"
-                :label="$t('dial.domainResolver')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionDetour"
+              color="primary"
+              :label="$t('listen.detour')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionBind"
+              color="primary"
+              :label="$t('dial.bindIf')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionIPV4"
+              color="primary"
+              :label="$t('dial.bindIp4')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionIPV6"
+              color="primary"
+              :label="$t('dial.bindIp6')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionBindNoPort"
+              color="primary"
+              :label="$t('dial.bindNoPort')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionRM"
+              color="primary"
+              label="Routing Mark"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionRA"
+              color="primary"
+              :label="$t('dial.reuseAddr')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionTCP"
+              color="primary"
+              :label="$t('listen.tcpOptions')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionUDP"
+              color="primary"
+              :label="$t('listen.udpOptions')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionCT"
+              color="primary"
+              :label="$t('dial.connTimeout')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionTcpKeepAlive"
+              color="primary"
+              :label="$t('dial.tcpKeepAlive')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="mode != 'client'">
+            <v-switch
+              v-model="optionDR"
+              color="primary"
+              :label="$t('dial.domainResolver')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

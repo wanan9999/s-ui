@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="90%"
     max-width="800"
     :loading="loading"
@@ -61,9 +61,8 @@
             />
           </v-col>
           <v-col
+            class="d-flex flex-wrap align-center justify-center ga-2"
             cols="auto"
-            align="center"
-            justify="center"
           >
             <v-btn
               icon="mdi-refresh"

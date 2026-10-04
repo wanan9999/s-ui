@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.tls')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.tls')"
+  >
     <v-row>
       <v-col
         cols="12"

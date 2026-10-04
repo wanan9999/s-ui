@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :model-value="visible"
-    transition="dialog-bottom-transition"
+
     width="90%"
     max-width="400"
     @update:model-value="$emit('update:visible', $event)"

@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.tls')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.tls')"
+  >
     <v-row v-if="tlsOptional">
       <v-col
         cols="12"
@@ -111,7 +116,7 @@
           </v-col>
         </v-row>
       </template>
-      <v-row>
+      <v-row v-if="(tls.server_name != undefined) || (tls.alpn)">
         <v-col
           v-if="tls.server_name != undefined"
           cols="12"
@@ -139,7 +144,7 @@
           />
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="(tls.min_version) || (tls.max_version)">
         <v-col
           v-if="tls.min_version"
           cols="12"
@@ -380,12 +385,15 @@
         </v-col>
       </v-row>
     </template>
-    <v-card-actions v-if="tls.enabled">
+    <v-card-actions
+      v-if="tls.enabled"
+      class="flex-wrap ga-2"
+    >
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -396,106 +404,105 @@
             {{ $t('tls.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionCert"
-                color="primary"
-                :label="$t('tls.cert')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionSNI"
-                color="primary"
-                label="SNI"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionALPN"
-                color="primary"
-                label="ALPN"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionMinV"
-                color="primary"
-                :label="$t('tls.minVer')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionMaxV"
-                color="primary"
-                :label="$t('tls.maxVer')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionCS"
-                color="primary"
-                :label="$t('tls.cs')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionFP"
-                color="primary"
-                label="UTLS"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionReality"
-                color="primary"
-                label="Reality"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionEch"
-                color="primary"
-                label="ECH"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionFragment"
-                color="primary"
-                :label="$t('tls.fragment')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionHandshake"
-                color="primary"
-                :label="$t('tls.handshakeTimeout')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="tls.reality == undefined">
-              <v-switch
-                v-model="optionSpoof"
-                color="primary"
-                :label="$t('tls.spoof')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionCert"
+              color="primary"
+              :label="$t('tls.cert')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionSNI"
+              color="primary"
+              label="SNI"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionALPN"
+              color="primary"
+              label="ALPN"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionMinV"
+              color="primary"
+              :label="$t('tls.minVer')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionMaxV"
+              color="primary"
+              :label="$t('tls.maxVer')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionCS"
+              color="primary"
+              :label="$t('tls.cs')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionFP"
+              color="primary"
+              label="UTLS"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionReality"
+              color="primary"
+              label="Reality"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionEch"
+              color="primary"
+              label="ECH"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionFragment"
+              color="primary"
+              :label="$t('tls.fragment')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionHandshake"
+              color="primary"
+              :label="$t('tls.handshakeTimeout')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="tls.reality == undefined">
+            <v-switch
+              v-model="optionSpoof"
+              color="primary"
+              :label="$t('tls.spoof')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

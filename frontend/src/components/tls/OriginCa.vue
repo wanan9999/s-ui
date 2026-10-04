@@ -1,7 +1,9 @@
 <template>
   <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
     subtitle="Cloudflare Origin CA"
-    style="background-color: inherit;"
   >
     <v-row>
       <v-col cols="12">

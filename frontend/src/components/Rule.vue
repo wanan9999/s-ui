@@ -7,8 +7,12 @@
     @update="saveExpTextarea"
     @close="closeExpTextarea"
   />
-  <v-card style="background-color: inherit;">
-    <v-row>
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+  >
+    <v-row v-if="(optionInbound) || (optionClient) || (optionIPver) || (optionNetwork) || (optionProtocol)">
       <v-col
         v-if="optionInbound"
         cols="12"
@@ -393,8 +397,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -405,106 +409,105 @@
             {{ $t('rule.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionInbound"
-                color="primary"
-                :label="$t('pages.inbounds')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionClient"
-                color="primary"
-                :label="$t('pages.clients')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionIPver"
-                color="primary"
-                :label="$t('rule.ipVer')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionNetwork"
-                color="primary"
-                :label="$t('network')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionProtocol"
-                color="primary"
-                :label="$t('protocol')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionDomain"
-                color="primary"
-                :label="$t('rule.domainRules')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionPort"
-                color="primary"
-                :label="$t('in.port')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionSrcIP"
-                color="primary"
-                :label="$t('rule.srcIpRules')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionSrcPort"
-                color="primary"
-                :label="$t('rule.srcPortRules')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionPreferredBy"
-                color="primary"
-                :label="$t('rule.preferredBy')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionInterface"
-                color="primary"
-                :label="$t('rule.interfaceAddr')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionRuleSet"
-                color="primary"
-                :label="$t('rule.ruleset')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionInbound"
+              color="primary"
+              :label="$t('pages.inbounds')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionClient"
+              color="primary"
+              :label="$t('pages.clients')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionIPver"
+              color="primary"
+              :label="$t('rule.ipVer')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionNetwork"
+              color="primary"
+              :label="$t('network')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionProtocol"
+              color="primary"
+              :label="$t('protocol')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionDomain"
+              color="primary"
+              :label="$t('rule.domainRules')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionPort"
+              color="primary"
+              :label="$t('in.port')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionSrcIP"
+              color="primary"
+              :label="$t('rule.srcIpRules')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionSrcPort"
+              color="primary"
+              :label="$t('rule.srcPortRules')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionPreferredBy"
+              color="primary"
+              :label="$t('rule.preferredBy')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionInterface"
+              color="primary"
+              :label="$t('rule.interfaceAddr')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionRuleSet"
+              color="primary"
+              :label="$t('rule.ruleset')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

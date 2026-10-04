@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Talescale">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Talescale"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -57,7 +62,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionHostname) || (optionUdpTimeout)">
       <v-col
         v-if="optionHostname"
         cols="12"
@@ -197,8 +202,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -209,82 +214,81 @@
             {{ $t('types.ts.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionStateDir"
-                color="primary"
-                :label="$t('types.ts.stateDir')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionAuth"
-                color="primary"
-                :label="$t('types.ts.authKey')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionCtrlUrl"
-                color="primary"
-                :label="$t('types.ts.controlUrl')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionHostname"
-                color="primary"
-                :label="$t('types.ts.hostname')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionExitNode"
-                color="primary"
-                :label="$t('types.ts.exitNode')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionRelay"
-                color="primary"
-                :label="$t('types.ts.relayServer')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionSysIf"
-                color="primary"
-                :label="$t('types.ts.systemInterface')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionAdvRoutes"
-                color="primary"
-                :label="$t('types.ts.advRoutes')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionUdpTimeout"
-                color="primary"
-                :label="$t('types.ts.udpTimeout')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionStateDir"
+              color="primary"
+              :label="$t('types.ts.stateDir')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionAuth"
+              color="primary"
+              :label="$t('types.ts.authKey')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionCtrlUrl"
+              color="primary"
+              :label="$t('types.ts.controlUrl')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionHostname"
+              color="primary"
+              :label="$t('types.ts.hostname')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionExitNode"
+              color="primary"
+              :label="$t('types.ts.exitNode')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionRelay"
+              color="primary"
+              :label="$t('types.ts.relayServer')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionSysIf"
+              color="primary"
+              :label="$t('types.ts.systemInterface')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionAdvRoutes"
+              color="primary"
+              :label="$t('types.ts.advRoutes')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionUdpTimeout"
+              color="primary"
+              :label="$t('types.ts.udpTimeout')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

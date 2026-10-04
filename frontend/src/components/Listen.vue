@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.listen')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.listen')"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -29,9 +34,9 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionDetour)">
       <v-col
-        v-if="optionDetour"
+
         cols="12"
         sm="6"
         md="4"
@@ -138,8 +143,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -150,42 +155,41 @@
             {{ $t('listen.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionDetour"
-                color="primary"
-                :label="$t('listen.detour')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionTCP"
-                color="primary"
-                :label="$t('listen.tcpOptions')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionUDP"
-                color="primary"
-                :label="$t('listen.udpOptions')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionTcpKeepAlive"
-                color="primary"
-                :label="$t('listen.tcpKeepAlive')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionDetour"
+              color="primary"
+              :label="$t('listen.detour')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionTCP"
+              color="primary"
+              :label="$t('listen.tcpOptions')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionUDP"
+              color="primary"
+              :label="$t('listen.udpOptions')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionTcpKeepAlive"
+              color="primary"
+              :label="$t('listen.tcpKeepAlive')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

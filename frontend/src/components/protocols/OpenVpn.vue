@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="isServer ? 'OpenVPN Server' : 'OpenVPN Client'">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="isServer ? 'OpenVPN Server' : 'OpenVPN Client'"
+  >
     <!-- Client dials a remote server; server listens locally. -->
     <v-row v-if="!isServer">
       <v-col

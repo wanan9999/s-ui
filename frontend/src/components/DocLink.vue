@@ -1,21 +1,22 @@
 <template>
-  <a
+  <v-btn
     :href="url"
     target="_blank"
     rel="noopener noreferrer"
-    class="text-decoration-none"
+    icon="mdi-information-outline"
+    variant="text"
+    size="small"
+    color="primary"
+    :aria-label="$t('docs')"
   >
-    <v-icon
-      icon="mdi-information-outline"
-      color="primary"
-      size="small"
+    <v-icon />
+    <v-tooltip
+      activator="parent"
+      location="top"
     >
-      <v-tooltip
-        activator="parent"
-        location="top"
-      >{{ $t('docs') }}</v-tooltip>
-    </v-icon>
-  </a>
+      {{ $t('docs') }}
+    </v-tooltip>
+  </v-btn>
 </template>
 
 <script lang="ts" setup>

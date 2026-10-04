@@ -1,0 +1,102 @@
+// Component defaults and Sass tokens own appearance. These rules only describe
+// layout relationships that component props cannot express.
+.page-content {
+  max-width: 1480px;
+  padding: 28px;
+}
+
+.page-title { font-size: 1.125rem; font-weight: 600; }
+.overview-value { font-size: 1.75rem; line-height: 1.25; font-weight: 600; font-variant-numeric: tabular-nums; }
+.app-brand .v-list-item-title { font-size: 1.25rem; font-weight: 700; letter-spacing: .04em; }
+.navigation-list { padding: 16px 12px; }
+.navigation-list .v-list-item { margin-bottom: 4px; min-height: 44px; }
+.page-toolbar { margin-bottom: 16px; }
+
+// A menu is one scrollable surface. Its child must be allowed to shrink inside
+// the height calculated by Vuetify's connected positioning strategy.
+.v-menu > .v-overlay__content > .v-list,
+.v-menu > .v-overlay__content > .v-card {
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+
+.v-col, [class*='v-col-'], .v-card-text, .v-window-item {
+  min-width: 0;
+}
+
+.v-card-title, .v-card-subtitle, .v-list-item-title {
+  overflow-wrap: anywhere;
+}
+
+.v-card-actions {
+  flex-wrap: wrap;
+}
+
+.v-card-actions > .v-btn, .v-toolbar__content > .v-btn {
+  flex-shrink: 0;
+}
+
+.v-selection-control .v-label {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+// Protocol editors are sections of an existing surface, not nested cards.
+.form-section {
+  background: transparent;
+  padding: 16px 0;
+  overflow: visible;
+}
+
+.form-section > .v-card-item .v-card-subtitle {
+  font-weight: 600;
+}
+
+.v-tabs + .v-window { padding-top: 16px; }
+.v-dialog > .v-overlay__content > .v-card > .v-card-actions { border-top: thin solid rgba(var(--v-border-color), var(--v-border-opacity)); }
+
+.form-section + .form-section {
+  border-top: thin solid rgba(var(--v-border-color), var(--v-border-opacity));
+}
+
+.form-section > .v-card-item {
+  padding: 0 0 16px;
+}
+
+.v-card-text, .v-alert__content {
+  overflow-wrap: anywhere;
+}
+
+.v-data-table__td {
+  overflow-wrap: anywhere;
+}
+
+.v-data-table thead th {
+  white-space: nowrap;
+}
+
+// A direct field stack must have the same separation as fields in VRow/VCol.
+.form-section > .v-input + .v-input,
+.v-form > .v-input + .v-input {
+  margin-top: 16px;
+}
+
+.v-data-table__tr--mobile .v-data-table__td-value {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.login-page {
+  min-height: 100dvh;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 599px) {
+  .page-content { padding: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

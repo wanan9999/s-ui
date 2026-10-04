@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="VMESS">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="VMESS"
+  >
     <v-row>
       <v-col
         cols="12"

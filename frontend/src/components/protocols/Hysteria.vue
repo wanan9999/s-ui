@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Hysteria">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Hysteria"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -54,9 +59,9 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(direction=='out')">
       <v-col
-        v-if="direction=='out'"
+
         cols="12"
         sm="6"
         md="4"
@@ -94,8 +99,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -106,18 +111,17 @@
             {{ $t('types.hy.hyOptions') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item v-if="direction=='out'">
-              <v-switch
-                v-model="optionMPort"
-                color="primary"
-                :label="$t('rule.portRange')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item v-if="direction=='out'">
+            <v-switch
+              v-model="optionMPort"
+              color="primary"
+              :label="$t('rule.portRange')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
     <QuicFields

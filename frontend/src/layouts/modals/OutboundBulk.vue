@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
     :model-value="visible"
   >
@@ -9,7 +9,7 @@
         {{ $t('actions.addbulk') }} {{ $t('objects.outbound') }}
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <v-row v-if="outbounds.length==0">
           <v-col cols="12">
             <v-text-field
@@ -27,8 +27,8 @@
             />
           </v-col>
           <v-col
+            class="d-flex flex-wrap align-center justify-center ga-2"
             cols="12"
-            align="center"
           >
             <v-btn
               hide-details

@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Tun">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Tun"
+  >
     <v-row>
       <v-col
         cols="12"

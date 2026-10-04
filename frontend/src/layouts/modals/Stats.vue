@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card
@@ -44,12 +44,11 @@
           </v-col>
         </v-row>
       </v-card-title>
-      <v-card-subtitle style="margin-top: -20px">
+      <v-card-subtitle>
         {{ $t('objects.' + resource) + " : " + tag }}
       </v-card-subtitle>
       <v-card-text
         class="text-center"
-        style="padding: 0"
       >
         <v-btn-toggle
           v-model="limit"

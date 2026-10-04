@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="ShadowTls">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="ShadowTls"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -95,7 +100,9 @@
     <v-card
       v-for="(value, key) in data.handshake_for_server_name"
       :key="key"
-      border
+      :border="false"
+      class="form-section"
+      rounded="0"
       density="compact"
       style="margin: 5px;"
       color="background"

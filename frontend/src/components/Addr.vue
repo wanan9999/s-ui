@@ -47,12 +47,11 @@
     <v-col
       cols="auto"
       align="end"
-      justify="center"
     >
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -63,26 +62,25 @@
             {{ $t('in.mdOption') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionRemark"
-                color="primary"
-                :label="$t('in.remark')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item v-if="hasTls">
-              <v-switch
-                v-model="optionTLS"
-                color="primary"
-                :label="$t('objects.tls')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionRemark"
+              color="primary"
+              :label="$t('in.remark')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item v-if="hasTls">
+            <v-switch
+              v-model="optionTLS"
+              color="primary"
+              :label="$t('objects.tls')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-col>
   </v-row>

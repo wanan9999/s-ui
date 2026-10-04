@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Trojan">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Trojan"
+  >
     <v-row>
       <v-col
         cols="12"

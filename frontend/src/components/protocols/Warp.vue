@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Warp">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Warp"
+  >
     <template v-if="data.id>0">
       <table
         dir="ltr"
@@ -33,7 +38,12 @@
           </tr>
         </tbody>
       </table>
-      <v-card :subtitle="$t('types.wg.peer')">
+      <v-card
+        :border="false"
+        class="form-section"
+        rounded="0"
+        :subtitle="$t('types.wg.peer')"
+      >
         <v-row>
           <v-col
             cols="12"
@@ -80,7 +90,7 @@
         </table>
       </v-card>
     </template>
-    <v-row>
+    <v-row v-if="(data.udp_timeout != undefined) || (data.workers != undefined) || (data.mtu != undefined)">
       <v-col
         v-if="data.udp_timeout != undefined"
         cols="12"
@@ -155,8 +165,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -167,34 +177,33 @@
             {{ $t('types.wg.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionUdp"
-                color="primary"
-                label="UDP Timeout"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionWorker"
-                color="primary"
-                :label="$t('types.wg.worker')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionMtu"
-                color="primary"
-                label="MTU"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionUdp"
+              color="primary"
+              label="UDP Timeout"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionWorker"
+              color="primary"
+              :label="$t('types.wg.worker')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionMtu"
+              color="primary"
+              label="MTU"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

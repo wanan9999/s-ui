@@ -45,22 +45,22 @@
     @save="savePresetRulesets"
     @close="presetRulesetsModal.visible = false"
   />
-  <v-row>
+  <v-row
+    justify="start"
+    class="page-toolbar"
+  >
     <v-col
+      class="d-flex flex-wrap align-center justify-start ga-2"
       cols="12"
-      justify="center"
-      align="center"
     >
       <v-btn
         color="primary"
-        style="margin: 0 5px;"
         @click="showRuleModal(-1)"
       >
         {{ $t('rule.add') }}
       </v-btn>
       <v-btn
         color="primary"
-        style="margin: 0 5px;"
         @click="showRulesetModal(-1)"
       >
         {{ $t('ruleset.add') }}
@@ -139,8 +139,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <v-select
             v-model="route.final"
@@ -154,8 +154,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <!-- Which DNS server resolves the domains outbounds dial. sing-box
                guesses when several servers exist and none is named. -->
@@ -171,8 +171,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <v-text-field
             v-model="route.default_interface"
@@ -185,8 +185,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <v-text-field
             v-model.number="routeMark"
@@ -199,8 +199,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <!-- Which shared client downloads the rule-sets that name none. -->
           <v-select
@@ -216,8 +216,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <v-switch
             v-model="route.auto_detect_interface"
@@ -239,18 +239,17 @@
     <v-col
       v-for="(item, index) in <any[]>rulesets"
       :key="item.tag"
+      xl="3"
       cols="12"
-      sm="4"
-      md="3"
-      lg="2"
+      sm="6"
+      md="6"
+      lg="4"
     >
       <v-card
-        rounded="xl"
-        elevation="5"
-        min-width="200"
+        class="h-100 d-flex flex-column"
         :title="item.tag"
       >
-        <v-card-subtitle style="margin-top: -15px;">
+        <v-card-subtitle>
           <v-row><v-col>{{ $t('ruleset.' + item.type) }}</v-col></v-row>
         </v-card-subtitle>
         <v-card-text>
@@ -259,7 +258,7 @@
           <v-row><v-col>{{ $t('actions.update') }}</v-col><v-col>{{ item.update_interval ?? '-' }}</v-col></v-row>
         </v-card-text>
         <v-divider />
-        <v-card-actions style="padding: 0;">
+        <v-card-actions>
           <v-btn
             icon="mdi-file-edit"
             @click="showRulesetModal(index)"
@@ -272,7 +271,6 @@
           </v-btn>
           <v-btn
             icon="mdi-file-remove"
-            style="margin-inline-start:0;"
             color="warning"
             @click="delRulesetOverlay[index] = true"
           >
@@ -289,7 +287,6 @@
           >
             <v-card
               :title="$t('actions.del')"
-              rounded="lg"
             >
               <v-divider />
               <v-card-text>{{ $t('confirm') }}</v-card-text>
@@ -325,22 +322,21 @@
     <v-col
       v-for="(item, index) in <any[]>rules"
       :key="item.id"
+      xl="3"
       cols="12"
-      sm="4"
-      md="3"
-      lg="2"
+      sm="6"
+      md="6"
+      lg="4"
       :draggable="true"
       @dragstart="onDragStart(index)"
       @dragover.prevent
       @drop="onDrop(index)"
     >
       <v-card
-        rounded="xl"
-        elevation="5"
-        min-width="200"
+        class="h-100 d-flex flex-column"
         :title="index+1"
       >
-        <v-card-subtitle style="margin-top: -15px;">
+        <v-card-subtitle>
           <v-row><v-col>{{ item.type != undefined ? $t('rule.logical') + ' (' + item.mode + ')' : $t('rule.simple') }}</v-col></v-row>
         </v-card-subtitle>
         <v-card-text>
@@ -350,7 +346,7 @@
           <v-row><v-col>{{ $t('rule.invert') }}</v-col><v-col>{{ $t((item.invert ?? false) ? 'yes' : 'no') }}</v-col></v-row>
         </v-card-text>
         <v-divider />
-        <v-card-actions style="padding: 0;">
+        <v-card-actions>
           <v-btn
             icon="mdi-file-edit"
             @click="showRuleModal(index)"
@@ -363,7 +359,6 @@
           </v-btn>
           <v-btn
             icon="mdi-file-remove"
-            style="margin-inline-start:0;"
             color="warning"
             @click="delRuleOverlay[index] = true"
           >
@@ -380,7 +375,6 @@
           >
             <v-card
               :title="$t('actions.del')"
-              rounded="lg"
             >
               <v-divider />
               <v-card-text>{{ $t('confirm') }}</v-card-text>

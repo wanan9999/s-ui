@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="OpenConnect">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="OpenConnect"
+  >
     <v-row>
       <v-col
         cols="12"

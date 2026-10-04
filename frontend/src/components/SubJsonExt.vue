@@ -7,7 +7,11 @@
     @close="enableEditor = false"
     @save="saveEditor"
   />
-  <v-card>
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -26,8 +30,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-select
           v-model="routeFinal"
@@ -86,8 +90,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-select
           v-model="subJsonExt.log!.level"
@@ -99,8 +103,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-switch
           v-model="subJsonExt.log!.timestamp"
@@ -114,8 +118,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-select
           v-model="subJsonExt.dns!.final"
@@ -127,8 +131,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <SimpleDNS
           :data="proxyDns"
@@ -138,8 +142,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <SimpleDNS
           :data="directDns"
@@ -151,8 +155,8 @@
       <v-col
         cols="12"
         sm="6"
-        md="3"
-        lg="2"
+        md="4"
+        lg="3"
       >
         <v-select
           v-model="subJsonExt.default_domain_resolver"
@@ -197,8 +201,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <v-text-field
             v-model.number="inbounds[0].mtu"
@@ -226,8 +230,8 @@
         <v-col
           cols="12"
           sm="6"
-          md="3"
-          lg="2"
+          md="4"
+          lg="3"
         >
           <v-switch
             v-model="platformProxy"
@@ -249,8 +253,8 @@
       </v-btn>
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -261,42 +265,41 @@
             {{ $t('setting.jsonSubOptions') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="enableLog"
-                color="primary"
-                :label="$t('basic.log.title')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="enableDns"
-                color="primary"
-                label="DNS"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="enableInb"
-                color="primary"
-                :label="$t('objects.inbound')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="enableExp"
-                color="primary"
-                label="Experimental"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="enableLog"
+              color="primary"
+              :label="$t('basic.log.title')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="enableDns"
+              color="primary"
+              label="DNS"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="enableInb"
+              color="primary"
+              :label="$t('objects.inbound')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="enableExp"
+              color="primary"
+              label="Experimental"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="SSH">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="SSH"
+  >
     <template v-if="optionKey">
       <v-row>
         <v-col cols="auto">
@@ -99,7 +104,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(data.host_key_algorithms != undefined) || (data.client_version != undefined)">
       <v-col
         v-if="data.host_key_algorithms != undefined"
         cols="12"
@@ -129,8 +134,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -141,42 +146,41 @@
             {{ $t('types.ssh.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionKey"
-                color="primary"
-                label="SSH Key"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionHostKey"
-                color="primary"
-                :label="$t('types.ssh.hostKey')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionAlgorithms"
-                color="primary"
-                :label="$t('types.ssh.algorithm')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionVer"
-                color="primary"
-                :label="$t('types.ssh.clientVer')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionKey"
+              color="primary"
+              label="SSH Key"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionHostKey"
+              color="primary"
+              :label="$t('types.ssh.hostKey')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionAlgorithms"
+              color="primary"
+              :label="$t('types.ssh.algorithm')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionVer"
+              color="primary"
+              :label="$t('types.ssh.clientVer')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

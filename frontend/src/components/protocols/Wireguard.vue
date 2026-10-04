@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="Wireguard">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="Wireguard"
+  >
     <v-row>
       <v-col
         cols="12"
@@ -67,7 +72,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(data.workers != undefined) || (data.mtu != undefined)">
       <v-col
         v-if="data.workers != undefined"
         cols="12"
@@ -149,8 +154,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -161,38 +166,42 @@
             {{ $t('types.wg.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionUdp"
-                color="primary"
-                label="UDP Timeout"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionWorker"
-                color="primary"
-                :label="$t('types.wg.worker')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionMtu"
-                color="primary"
-                label="MTU"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionUdp"
+              color="primary"
+              label="UDP Timeout"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionWorker"
+              color="primary"
+              :label="$t('types.wg.worker')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionMtu"
+              color="primary"
+              label="MTU"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>
-  <v-card v-if="data.peers != undefined">
+  <v-card
+    v-if="data.peers != undefined"
+    :border="false"
+    class="form-section"
+    rounded="0"
+  >
     <v-card-subtitle>
       {{ $t('types.wg.peers') }}
       <v-chip
@@ -208,7 +217,12 @@
       v-for="(p, index) in data.peers"
       :key="index"
     >
-      <v-card style="margin-top: 1rem;">
+      <v-card
+        :border="false"
+        class="form-section"
+        rounded="0"
+        style="margin-top: 1rem;"
+      >
         <v-card-subtitle>
           {{ $t('types.wg.peer') + ' ' + (Number(index)+1) }} <v-icon
             color="error"

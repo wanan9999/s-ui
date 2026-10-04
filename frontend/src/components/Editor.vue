@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card class="rounded-lg">
@@ -8,9 +8,12 @@
         {{ title }}
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <div class="code-editor">
-          <div class="line-numbers">
+          <div
+            ref="lineNumbers"
+            class="line-numbers"
+          >
             <span
               v-for="n in lineCount"
               :key="n"
@@ -22,10 +25,11 @@
             hide-details
             variant="outlined"
             bg-color="background"
-            :style="{ 'font-family': 'monospace' }"
+            wrap="off"
+            :spellcheck="false"
             no-resize
             auto-grow
-            @scroll="syncScroll"
+            @scroll.capture="syncScroll"
           />
         </div>
       </v-card-text>
@@ -80,8 +84,9 @@ export default {
   },
   methods: {
     syncScroll() {
-      const textarea = document.querySelector('textarea')
-      const lineNumbers = textarea?.parentElement?.parentElement?.querySelector('.line-numbers')
+      const field = this.$refs.textareaRef as { $el: HTMLElement } | undefined
+      const textarea = field?.$el.querySelector('textarea')
+      const lineNumbers = this.$refs.lineNumbers as HTMLElement | undefined
       if (lineNumbers && textarea) {
         lineNumbers.scrollTop = textarea.scrollTop
       }
@@ -98,7 +103,7 @@ export default {
 
 <style scoped>
 .code-editor {
-  direction: ltr !important;
+  direction: ltr;
   display: flex;
   border: 1px solid v-bind('theme.current.colors["outline"]');
   border-radius: 4px;
@@ -107,7 +112,7 @@ export default {
 }
 
 .line-numbers {
-  width: 40px;
+  flex: 0 0 48px;
   background: v-bind('theme.current.colors["surface"]');
   text-align: right;
   padding: 12px 8px 12px 4px; /* Match textarea padding */
@@ -127,17 +132,15 @@ export default {
 
 /* Override Vuetify textarea styles for alignment */
 :deep(.v-textarea .v-field__input) {
-  padding: 12px 8px !important; /* Match line-numbers padding */
-  line-height: 1.5 !important; /* Match line-numbers line height */
-  font-family: monospace !important;
+  padding: 12px 8px;
+  line-height: 1.5;
+  font-family: monospace;
   white-space: pre;
   mask-image: inherit;
-  font-size: 14px !important; /* Match font size */
+  font-size: 14px;
 }
 
-/* Ensure textarea and line numbers align */
-:deep(.v-textarea textarea) {
-  margin-top: 0 !important; /* Remove any default margin */
-  padding-top: 0 !important; /* Remove any default padding */
+:deep(.v-textarea) {
+  min-width: 0;
 }
 </style>

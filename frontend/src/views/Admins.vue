@@ -18,15 +18,16 @@
     :visible="tokenModal.visible"
     @close="closeTokenModal"
   />
-  <v-row>
+  <v-row
+    justify="start"
+    class="page-toolbar"
+  >
     <v-col
+      class="d-flex flex-wrap align-center justify-start ga-2"
       cols="12"
-      justify="center"
-      align="center"
     >
       <v-btn
         color="primary"
-        style="margin: 0 5px;"
         @click="showChangesModal('')"
       >
         {{ $t('admin.changes') }}
@@ -43,18 +44,17 @@
     <v-col
       v-for="item in <any[]>users"
       :key="item.id"
+      xl="3"
       cols="12"
-      sm="4"
-      md="3"
-      lg="2"
+      sm="6"
+      md="6"
+      lg="4"
     >
       <v-card
-        rounded="xl"
-        elevation="5"
-        min-width="200"
+        class="h-100 d-flex flex-column"
         :title="item.username"
       >
-        <v-card-subtitle style="margin-top: -15px;">
+        <v-card-subtitle>
           {{ $t('admin.lastLogin') }}
         </v-card-subtitle>
         <v-card-text>
@@ -78,7 +78,7 @@
           </v-row>
         </v-card-text>
         <v-divider />
-        <v-card-actions style="padding: 0;">
+        <v-card-actions>
           <v-btn
             icon="mdi-account-edit"
             @click="showEditModal(item)"

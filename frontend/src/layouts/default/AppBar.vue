@@ -1,17 +1,17 @@
 <template>
-  <v-app-bar :elevation="5">
-    <v-icon
-      v-if="isMobile"
-      icon="mdi-menu"
+  <v-app-bar
+    :elevation="0"
+    border="b"
+    height="72"
+  >
+    <v-app-bar-nav-icon
+      :aria-label="isMobile ? '打开导航' : '切换导航宽度'"
+      variant="text"
       @click="$emit('toggleDrawer')"
-    />
-    <span
-      v-else
-      style="width: 24px"
     />
     <v-app-bar-title
       :text="$t(<string>route.name)"
-      class="align-center text-center "
+      class="page-title"
     />
     <!-- A stopped core is invisible from the panel otherwise, and the flag
          survives a reboot, so it has to be said on every page. -->

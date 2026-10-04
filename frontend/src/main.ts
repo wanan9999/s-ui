@@ -9,6 +9,7 @@ import { createApp, ref } from 'vue'
 
 // Components
 import App from './App.vue'
+import '@/styles/layout.scss'
 
 // Use router
 import router from './router'

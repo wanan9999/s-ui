@@ -1,5 +1,10 @@
 <template>
-  <v-card :subtitle="$t('objects.transport')">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    :subtitle="$t('objects.transport')"
+  >
     <v-row>
       <v-col
         cols="12"

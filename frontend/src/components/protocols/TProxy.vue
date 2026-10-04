@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="TProxy">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="TProxy"
+  >
     <v-row>
       <v-col
         cols="12"

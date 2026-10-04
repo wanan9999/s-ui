@@ -22,7 +22,7 @@
         </v-row>
       </v-card-title>
       <v-divider />
-      <v-card-text style="padding: 0 16px; overflow-y: scroll;">
+      <v-card-text>
         <v-row class="mt-1">
           <v-col cols="12">
             <v-select

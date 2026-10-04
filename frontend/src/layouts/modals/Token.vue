@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    transition="dialog-bottom-transition"
+
     width="800"
   >
     <v-card
@@ -73,7 +73,6 @@
                   </template>
                   <v-card
                     :title="$t('actions.del')"
-                    rounded="lg"
                   >
                     <v-divider />
                     <v-card-text>{{ $t('confirm') }}</v-card-text>

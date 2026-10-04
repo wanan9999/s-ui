@@ -21,11 +21,13 @@
     :tag="sessions.tag"
     @close="closeSessions"
   />
-  <v-row>
+  <v-row
+    justify="start"
+    class="page-toolbar"
+  >
     <v-col
+      class="d-flex flex-wrap align-center justify-start ga-2"
       cols="12"
-      justify="center"
-      align="center"
     >
       <v-btn
         color="primary"
@@ -39,18 +41,17 @@
     <v-col
       v-for="(item, index) in <any[]>inbounds"
       :key="item.tag"
+      xl="3"
       cols="12"
-      sm="4"
-      md="3"
-      lg="2"
+      sm="6"
+      md="6"
+      lg="4"
     >
       <v-card
-        rounded="xl"
-        elevation="5"
-        min-width="200"
+        class="h-100 d-flex flex-column"
         :title="item.tag"
       >
-        <v-card-subtitle style="margin-top: -15px;">
+        <v-card-subtitle>
           <v-row>
             <v-col>{{ item.type }}</v-col>
           </v-row>
@@ -123,7 +124,7 @@
           </v-row>
         </v-card-text>
         <v-divider />
-        <v-card-actions style="padding: 0;">
+        <v-card-actions>
           <v-btn
             icon="mdi-file-edit"
             @click="showModal(item.id)"
@@ -137,7 +138,6 @@
           </v-btn>
           <v-btn
             icon="mdi-file-remove"
-            style="margin-inline-start:0;"
             color="warning"
             @click="delOverlay[index] = true"
           >
@@ -155,7 +155,6 @@
           >
             <v-card
               :title="$t('actions.del')"
-              rounded="lg"
             >
               <v-divider />
               <v-card-text>{{ $t('confirm') }}</v-card-text>

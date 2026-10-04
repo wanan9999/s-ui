@@ -1,7 +1,9 @@
 <template>
   <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
     subtitle="ACME"
-    style="background-color: inherit;"
   >
     <v-row>
       <v-col cols="12">
@@ -12,7 +14,7 @@
         />
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="(optionDir) || (optionDefault) || (optionEmail)">
       <v-col
         v-if="optionDir"
         cols="12"
@@ -205,8 +207,8 @@
       <v-spacer />
       <v-menu
         v-model="menu"
+        width="320"
         :close-on-content-click="false"
-        location="start"
       >
         <template #activator="{ props }">
           <v-btn
@@ -217,82 +219,81 @@
             {{ $t('tls.acme.options') }}
           </v-btn>
         </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-switch
-                v-model="optionDir"
-                color="primary"
-                :label="$t('tls.acme.dataDir')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionDefault"
-                color="primary"
-                :label="$t('tls.acme.defaultDomain')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionEmail"
-                color="primary"
-                :label="$t('email')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionChallenge"
-                color="primary"
-                :label="$t('tls.acme.disableChallenges')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionPorts"
-                color="primary"
-                :label="$t('tls.acme.altPorts')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionProvider"
-                color="primary"
-                :label="$t('tls.acme.caProvider')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionExt"
-                color="primary"
-                :label="$t('tls.acme.extAcc')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionDns01"
-                color="primary"
-                :label="$t('tls.acme.dns01')"
-                hide-details
-              />
-            </v-list-item>
-            <v-list-item>
-              <v-switch
-                v-model="optionHttpClient"
-                color="primary"
-                :label="$t('basic.httpClient.title')"
-                hide-details
-              />
-            </v-list-item>
-          </v-list>
-        </v-card>
+
+        <v-list>
+          <v-list-item>
+            <v-switch
+              v-model="optionDir"
+              color="primary"
+              :label="$t('tls.acme.dataDir')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionDefault"
+              color="primary"
+              :label="$t('tls.acme.defaultDomain')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionEmail"
+              color="primary"
+              :label="$t('email')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionChallenge"
+              color="primary"
+              :label="$t('tls.acme.disableChallenges')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionPorts"
+              color="primary"
+              :label="$t('tls.acme.altPorts')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionProvider"
+              color="primary"
+              :label="$t('tls.acme.caProvider')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionExt"
+              color="primary"
+              :label="$t('tls.acme.extAcc')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionDns01"
+              color="primary"
+              :label="$t('tls.acme.dns01')"
+              hide-details
+            />
+          </v-list-item>
+          <v-list-item>
+            <v-switch
+              v-model="optionHttpClient"
+              color="primary"
+              :label="$t('basic.httpClient.title')"
+              hide-details
+            />
+          </v-list-item>
+        </v-list>
       </v-menu>
     </v-card-actions>
   </v-card>

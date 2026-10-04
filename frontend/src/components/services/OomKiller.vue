@@ -1,5 +1,10 @@
 <template>
-  <v-card subtitle="OOM Killer">
+  <v-card
+    :border="false"
+    class="form-section"
+    rounded="0"
+    subtitle="OOM Killer"
+  >
     <v-row>
       <v-col
         cols="12"

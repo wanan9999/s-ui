@@ -1,7 +1,6 @@
 <template>
   <v-container
-    class="fill-height"
-    style="margin-top: 100px;"
+    class="login-page"
   >
     <v-row
       justify="center"
@@ -9,11 +8,17 @@
     >
       <v-col
         cols="12"
-        sm="8"
-        md="4"
       >
-        <v-card>
-          <v-card-title class="headline">
+        <v-card class="pa-4">
+          <v-card-title class="d-flex align-center ga-3 mb-3">
+            <v-avatar
+              color="primary"
+              variant="tonal"
+              rounded="lg"
+            >
+              <v-icon icon="mdi-lan" />
+            </v-avatar>
+            S-UI ·
             {{ $t('login.title') }}
           </v-card-title>
           <v-card-text>
@@ -39,7 +44,7 @@
                 type="submit"
                 color="primary"
                 block
-                class="mt-2"
+                class="mt-4"
               >
                 {{ $t('actions.submit') }}
               </v-btn>
@@ -47,9 +52,9 @@
             <v-select
               v-model="$i18n.locale"
               density="compact"
-              class="mt-2"
+              class="mt-6"
               hide-details
-              variant="solo"
+              variant="outlined"
               :items="languages"
               @update:model-value="changeLocale"
             >
