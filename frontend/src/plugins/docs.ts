@@ -1,7 +1,7 @@
 const DOCS_BASE = "https://sing-box.sagernet.org/configuration"
 
 export function inboundDoc(type: string): string {
-  if (type === "l2tp") return "https://github.com/wanan9999/s-ui#l2tpipsec-入站"
+  if (type === "l2tp") return "https://github.com/wanan9999/s-ui#连接-l2tp"
   return `${DOCS_BASE}/inbound/${type}/`
 }
 

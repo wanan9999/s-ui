@@ -11,7 +11,7 @@ Linux 代理管理面板，基于 sing-box，支持纯 Go **L2TP/IPsec 入站**�
 ## 安装
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanan9999/s-ui/main/install.sh)
+SUI_LANG=zhcn bash <(curl -fsSL https://raw.githubusercontent.com/wanan9999/s-ui/main/install.sh)
 ```
 
 也可下载 [发行包](https://github.com/wanan9999/s-ui/releases)。默认面板端口 **2095**，订阅端口 **2096**；首次登录后修改管理员凭据。
