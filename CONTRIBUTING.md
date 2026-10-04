@@ -36,6 +36,17 @@ L2TP 真实拨号集成测试还需 `SUI_L2TP_INTEGRATION=1`、`/dev/net/tun` �
 
 单元测试、隔离网络集成测试和公网验收分别报告。公网独立客户端、同 NAT 并发、NAT 重绑定、长期重连、rekey，以及 DNS 出口故障不直连均须单独验收，不能用配置保存成功代替。
 
+## veepin 依赖更新
+
+生产构建使用 `go.mod` 固定的远端 veepin 版本，并由 `go.sum` 校验。
+不使用本地路径 `replace` 或相邻仓库。更新时先推送 veepin 提交，再用
+`go get github.com/wanan9999/veepin@<提交 SHA>` 更新依赖，执行 `go mod tidy`，
+确认 `GOWORK=off` 下可独立构建，并重跑 Linux 测试及独立客户端验收。
+
+协议换钥、SA 寿命、探活和资源释放由 veepin 负责。面板检查入站 worker
+的异常退出，保留失败原因，关闭原核心实例后由既有守护任务重建；维护模式
+仍禁止自动启动。换钥不重建 gVisor 栈，不改变账号路由、DNS 或出站配置。
+
 ## 发布
 
 - 普通主分支推送：测试并构建 Linux 产物。

@@ -21,13 +21,14 @@ import (
 
 type Inbound struct {
 	inbound.Adapter
-	ctx     context.Context
-	router  adapter.Router
-	logger  log.ContextLogger
-	options Options
-	mu      sync.Mutex
-	server  *vpn.Server
-	closed  bool
+	ctx      context.Context
+	router   adapter.Router
+	logger   log.ContextLogger
+	options  Options
+	mu       sync.Mutex
+	server   *vpn.Server
+	closed   bool
+	serveErr error
 }
 
 func newInbound(ctx context.Context, router adapter.Router, logger log.ContextLogger, tag string, options Options) (adapter.Inbound, error) {
@@ -64,11 +65,7 @@ func (i *Inbound) Start(stage adapter.StartStage) error {
 		return err
 	}
 	i.server = srv
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			i.logger.Error("L2TP listener stopped: ", err)
-		}
-	}()
+	go i.runServer(srv.ListenAndServe, srv.Close)
 	i.logger.Info("L2TP/IPsec listening on ", i.options.Listen, ":", i.options.ListenPort, " and UDP/4500")
 	return nil
 }
@@ -158,4 +155,30 @@ func newSessionDevice(ctx context.Context, i *Inbound, user string, address neti
 		return nil, fmt.Errorf("l2tp: start userspace stack: %w", err)
 	}
 	return d, nil
+}
+
+// HealthError lets the panel distinguish a live process from a dead listener.
+func (i *Inbound) HealthError() error {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+	return i.serveErr
+}
+
+// Keep worker exit handling separate from binding so administrative shutdown
+// and unexpected termination have a single, testable state transition.
+func (i *Inbound) runServer(serve func() error, closeServer func() error) {
+	err := serve()
+	i.mu.Lock()
+	if !i.closed {
+		if err == nil {
+			err = fmt.Errorf("l2tp: listener exited unexpectedly")
+		}
+		i.serveErr = err
+	}
+	failed := i.serveErr
+	i.mu.Unlock()
+	if failed != nil {
+		i.logger.Error("L2TP listener stopped: ", failed)
+		_ = closeServer()
+	}
 }

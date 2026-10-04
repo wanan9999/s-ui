@@ -249,6 +249,16 @@ func (s *ConfigService) startCoreLocked(bypassCooldown bool) error {
 		return nil
 	}
 
+	// An unhealthy listener still owns a box and possibly other sockets.
+	// Close it before rebuilding; otherwise recovery fails with address-in-use.
+	if corePtr.GetInstance() != nil {
+		if err := corePtr.HealthError(); err != nil {
+			logger.Error("core health check: ", err)
+		}
+		if err := corePtr.Stop(); err != nil {
+			return err
+		}
+	}
 	logger.Info("starting core")
 	rawConfig, err := s.GetConfig("")
 	if err != nil {
@@ -305,7 +315,7 @@ func (s *ConfigService) restartCoreWithConfig(config json.RawMessage) error {
 		return nil
 	}
 
-	if corePtr.IsRunning() {
+	if corePtr.GetInstance() != nil {
 		if err := corePtr.Stop(); err != nil {
 			logger.Error("restart sing-box err (stop):", err.Error())
 			return err
@@ -336,7 +346,7 @@ func (s *ConfigService) SetMaintenance(enabled bool) error {
 		return err
 	}
 	if enabled {
-		if !corePtr.IsRunning() {
+		if corePtr.GetInstance() == nil {
 			return nil
 		}
 		logger.Warning("maintenance mode on: stopping core, clients cannot connect until it is turned off")

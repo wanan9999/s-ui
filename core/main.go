@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/wanan9999/s-ui/util/common"
@@ -50,7 +51,27 @@ func (c *Core) GetInstance() *Box {
 func (c *Core) IsRunning() bool {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
-	return c.isRunning
+	return c.isRunning && c.healthErrorLocked() == nil
+}
+
+// HealthError reports failed inbound workers; normal disabled inbounds are healthy.
+func (c *Core) HealthError() error {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.healthErrorLocked()
+}
+func (c *Core) healthErrorLocked() error {
+	if c.instance == nil {
+		return nil
+	}
+	for _, inbound := range c.instance.Inbound().Inbounds() {
+		if checker, ok := inbound.(interface{ HealthError() error }); ok {
+			if err := checker.HealthError(); err != nil {
+				return fmt.Errorf("inbound %s: %w", inbound.Tag(), err)
+			}
+		}
+	}
+	return nil
 }
 
 // running returns the live box, or an error when the core is stopped. One
