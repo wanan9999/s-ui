@@ -6,7 +6,7 @@ Linux 代理管理面板，基于 sing-box，支持纯 Go **L2TP/IPsec 入站**�
 - 支持 Linux amd64 / arm64，纯 Go SQLite，`CGO_ENABLED=0` 构建。
 - 前端源码在 `frontend/` 本地维护，无需拉取子模块。
 
-[安装](#安装) · [连接 L2TP](#连接-l2tp) · [多用户分流](#多用户分流) · [统一 DNS](#统一-dns) · [开发说明](CONTRIBUTING.md)
+[安装](#安装) · [连接 L2TP](#连接-l2tp) · [多用户分流](#多用户分流) · [统一 DNS](#统一-dns) · [开发维护](AGENTS.md)
 
 ## 安装
 
