@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alireza0/s-ui/config"
-	"github.com/alireza0/s-ui/database"
+	"github.com/wanan9999/s-ui/config"
+	"github.com/wanan9999/s-ui/database"
 )
 
 func backupDb(output string, exclude string) {

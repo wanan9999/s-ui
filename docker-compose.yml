@@ -1,22 +1,15 @@
----
 services:
   s-ui:
-    image: alireza7/s-ui
+    image: ghcr.io/wanan9999/s-ui:latest
     container_name: s-ui
-    hostname: "s-ui"
-    volumes:
-      - "./db:/app/db"
-      - "./cert:/app/cert"
-    tty: true
     restart: unless-stopped
+    environment:
+      TZ: Asia/Shanghai
     ports:
-      - "2095:2095"
-      - "2096:2096"
-    networks:
-      - s-ui
-    entrypoint: "./entrypoint.sh"
-
-networks:
-  s-ui:
-    driver: bridge
-  
+      - "2095:2095/tcp"
+      - "2096:2096/tcp"
+      - "500:500/udp"
+      - "4500:4500/udp"
+    volumes:
+      - ./db:/app/db
+      - ./cert:/app/cert

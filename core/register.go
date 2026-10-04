@@ -1,15 +1,16 @@
 package core
 
 import (
-	suiAnytls "github.com/alireza0/s-ui/core/protocol/anytls"
-	suiHysteria "github.com/alireza0/s-ui/core/protocol/hysteria"
-	suiHysteria2 "github.com/alireza0/s-ui/core/protocol/hysteria2"
-	suiShadowsocks "github.com/alireza0/s-ui/core/protocol/shadowsocks"
-	suiSnell "github.com/alireza0/s-ui/core/protocol/snell"
-	suiTrojan "github.com/alireza0/s-ui/core/protocol/trojan"
-	suiTuic "github.com/alireza0/s-ui/core/protocol/tuic"
-	suiVless "github.com/alireza0/s-ui/core/protocol/vless"
-	suiVmess "github.com/alireza0/s-ui/core/protocol/vmess"
+	suiAnytls "github.com/wanan9999/s-ui/core/protocol/anytls"
+	suiHysteria "github.com/wanan9999/s-ui/core/protocol/hysteria"
+	suiHysteria2 "github.com/wanan9999/s-ui/core/protocol/hysteria2"
+	suiL2TP "github.com/wanan9999/s-ui/core/protocol/l2tp"
+	suiShadowsocks "github.com/wanan9999/s-ui/core/protocol/shadowsocks"
+	suiSnell "github.com/wanan9999/s-ui/core/protocol/snell"
+	suiTrojan "github.com/wanan9999/s-ui/core/protocol/trojan"
+	suiTuic "github.com/wanan9999/s-ui/core/protocol/tuic"
+	suiVless "github.com/wanan9999/s-ui/core/protocol/vless"
+	suiVmess "github.com/wanan9999/s-ui/core/protocol/vmess"
 
 	sbCertificate "github.com/sagernet/sing-box/adapter/certificate"
 	"github.com/sagernet/sing-box/adapter/endpoint"
@@ -59,6 +60,7 @@ import (
 
 func InboundRegistry() *inbound.Registry {
 	registry := inbound.NewRegistry()
+	suiL2TP.RegisterInbound(registry)
 
 	tun.RegisterInbound(registry)
 	redirect.RegisterRedirect(registry)

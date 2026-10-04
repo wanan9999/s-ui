@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alireza0/s-ui/config"
-	"github.com/alireza0/s-ui/database/model"
+	"github.com/wanan9999/s-ui/config"
+	"github.com/wanan9999/s-ui/database/model"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -68,7 +68,7 @@ func OpenDB(dbPath string) error {
 	// Deferred transactions that read first and then write (e.g. the deplete
 	// job) cannot wait on the lock upgrade and fail instantly with "database
 	// is locked" whenever another writer (stats job) is active (#1209).
-	dsn := dbPath + sep + "_busy_timeout=10000&_journal_mode=WAL&_cache_size=-200&_txlock=immediate"
+	dsn := dbPath + sep + "_pragma=busy_timeout(10000)&_pragma=journal_mode(WAL)&_pragma=cache_size(-200)&_txlock=immediate"
 	var err error
 	db, err = gorm.Open(sqlite.Open(dsn), c)
 	if err != nil {

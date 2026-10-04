@@ -1,26 +1,19 @@
-# Base images are pinned by digest, not by a floating tag. "node:alpine" and
-# "alpine" resolved to whatever was published that day, so two builds of the
-# same commit could differ, and a bad upstream push reached every build at once.
-# The tag is kept alongside the digest so it is obvious what is pinned; the
-# digest is what docker enforces.
+# Linux build; Go and SQLite run with CGO_ENABLED=0.
 FROM --platform=$BUILDPLATFORM node:26-alpine@sha256:ef24c5053d50fdc3e4e56eb4e7ddb7861874ab0fdc797046ba897581deb8e868 AS front-builder
 WORKDIR /app
 COPY frontend/ ./
-RUN npm install && npm run build
+RUN npm ci && npm run build
 
-FROM golang:1.26-alpine@sha256:ce864e7223ac17b1775e6fd0b4c0db580c2eb50e7953a427916379e4b92a1628 AS backend-builder
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS backend-builder
 WORKDIR /app
 ARG TARGETARCH
 ARG TARGETVARIANT
-ENV CGO_ENABLED=1
-ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
+ENV CGO_ENABLED=0
+ENV GOOS=linux
 ENV GOARCH=$TARGETARCH
 
 RUN apk upgrade --no-cache --scripts=no apk-tools && \
     apk add --no-cache \
-    gcc \
-    musl-dev \
-    libc-dev \
     make \
     git \
     wget \
@@ -28,7 +21,6 @@ RUN apk upgrade --no-cache --scripts=no apk-tools && \
     bash \
     curl
 
-ENV CC=gcc
 
 RUN CRONET_ARCH="$TARGETARCH" && \
     CRONET_URL="https://github.com/SagerNet/cronet-go/releases/latest/download/libcronet-linux-${CRONET_ARCH}.so"; \
@@ -43,11 +35,12 @@ RUN if [ "$TARGETARCH" = "arm" ]; then export GOARM=7; [ "$TARGETVARIANT" = "v6"
     . ./build-tags.sh && \
     TAGS=$(tags_for docker) && \
     LDFLAGS=$(ldflags_for docker) && \
-    go build -ldflags="$LDFLAGS" -tags "$TAGS" -o sui main.go
+    go build -trimpath -buildvcs=false -ldflags="$LDFLAGS" -tags "$TAGS" -o sui .
 
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
-LABEL org.opencontainers.image.authors="alireza7@gmail.com"
-ENV TZ=Asia/Tehran
+LABEL org.opencontainers.image.authors="wanan9999"
+LABEL org.opencontainers.image.source="https://github.com/wanan9999/s-ui"
+ENV TZ=Asia/Shanghai
 WORKDIR /app
 RUN set -ex && apk upgrade --no-cache --scripts=no apk-tools && \
     apk add --no-cache --upgrade bash ca-certificates nftables su-exec && \

@@ -5,6 +5,7 @@ Wants=network.target
 
 [Service]
 Type=simple
+Environment=TZ=Asia/Shanghai
 WorkingDirectory=/usr/local/s-ui/
 ExecStart=/usr/local/s-ui/sui
 Restart=on-failure

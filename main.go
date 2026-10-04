@@ -1,3 +1,5 @@
+//go:build linux
+
 package main
 
 import (
@@ -7,8 +9,8 @@ import (
 	"syscall"
 	_ "time/tzdata"
 
-	"github.com/alireza0/s-ui/app"
-	"github.com/alireza0/s-ui/cmd"
+	"github.com/wanan9999/s-ui/app"
+	"github.com/wanan9999/s-ui/cmd"
 )
 
 func runApp() {

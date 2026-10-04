@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Test Docker multi-platform build (linux/amd64, 386, arm64, arm/v7, arm/v6)
+# Test Docker multi-platform build (linux/amd64, arm64)
 # Requires: frontend_dist/ (run from repo root after building frontend)
 
 set -e
@@ -17,7 +17,7 @@ else
   echo "frontend_dist exists, skipping frontend build."
 fi
 
-PLATFORMS="linux/amd64,linux/386,linux/arm64/v8,linux/arm/v7,linux/arm/v6"
+PLATFORMS="linux/amd64,linux/arm64"
 echo "==> Testing Docker build for: $PLATFORMS"
 docker buildx build \
   --platform "$PLATFORMS" \

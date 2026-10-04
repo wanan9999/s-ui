@@ -6,11 +6,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/alireza0/s-ui/database"
-	"github.com/alireza0/s-ui/database/model"
-	"github.com/alireza0/s-ui/logger"
-	"github.com/alireza0/s-ui/util"
-	"github.com/alireza0/s-ui/util/common"
+	"github.com/wanan9999/s-ui/database"
+	"github.com/wanan9999/s-ui/database/model"
+	"github.com/wanan9999/s-ui/logger"
+	"github.com/wanan9999/s-ui/util"
+	"github.com/wanan9999/s-ui/util/common"
 
 	"gorm.io/gorm"
 )
@@ -245,7 +245,7 @@ func (s *InboundService) GetAllConfig(db *gorm.DB) ([]json.RawMessage, error) {
 
 func (s *InboundService) hasUser(inboundType string) bool {
 	switch inboundType {
-	case "mixed", "socks", "http", "shadowsocks", "vmess", "trojan", "naive", "hysteria", "shadowtls", "tuic", "hysteria2", "vless", "anytls", "snell":
+	case "l2tp", "mixed", "socks", "http", "shadowsocks", "vmess", "trojan", "naive", "hysteria", "shadowtls", "tuic", "hysteria2", "vless", "anytls", "snell":
 		return true
 	}
 	return false

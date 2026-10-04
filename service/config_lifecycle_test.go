@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/alireza0/s-ui/core"
-	"github.com/alireza0/s-ui/database"
+	"github.com/wanan9999/s-ui/core"
+	"github.com/wanan9999/s-ui/database"
 )
 
 // A database and a real but unstarted Core, so the lifecycle functions can be

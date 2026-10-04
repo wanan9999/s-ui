@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/alireza0/s-ui/database/model"
+	"github.com/wanan9999/s-ui/database/model"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 )
@@ -65,6 +65,11 @@ func TestBackupCarriesEveryTable(t *testing.T) {
 	if err := InitDB(filepath.Join(t.TempDir(), "test.db")); err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() {
+		if sqlDB, err := db.DB(); err == nil {
+			_ = sqlDB.Close()
+		}
+	})
 	seedEveryTable(t)
 
 	contents, err := GetDb("")
@@ -96,6 +101,11 @@ func TestBackupExcludesOnlyWhatWasAsked(t *testing.T) {
 	if err := InitDB(filepath.Join(t.TempDir(), "test.db")); err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() {
+		if sqlDB, err := db.DB(); err == nil {
+			_ = sqlDB.Close()
+		}
+	})
 	seedEveryTable(t)
 
 	contents, err := GetDb("stats,changes")
@@ -134,6 +144,11 @@ func TestBackupsDoNotShareATempFile(t *testing.T) {
 	if err := InitDB(filepath.Join(t.TempDir(), "test.db")); err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() {
+		if sqlDB, err := db.DB(); err == nil {
+			_ = sqlDB.Close()
+		}
+	})
 	seedEveryTable(t)
 
 	first, err := GetDb("")
@@ -167,6 +182,11 @@ func TestBackupCleansUpAfterItself(t *testing.T) {
 	if err := InitDB(filepath.Join(t.TempDir(), "test.db")); err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() {
+		if sqlDB, err := db.DB(); err == nil {
+			_ = sqlDB.Close()
+		}
+	})
 	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil {
 		t.Fatal(err)

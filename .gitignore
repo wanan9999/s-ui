@@ -10,7 +10,6 @@ main
 tmp
 .sync*
 *.tar.gz
-frontend/
 
 # local env files
 .env.local
@@ -19,14 +18,6 @@ frontend/
 # Log files
 *.log*
 .cache
-
-# Windows build artifacts
-*.exe
-*.zip
-s-ui-windows/
-sui-*.exe
-sui-*.zip
-windows/sui-*.exe
 
 # Editor directories and files
 .idea

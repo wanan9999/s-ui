@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/alireza0/s-ui/config"
-	"github.com/alireza0/s-ui/database"
-	"github.com/alireza0/s-ui/service"
+	"github.com/wanan9999/s-ui/config"
+	"github.com/wanan9999/s-ui/database"
+	"github.com/wanan9999/s-ui/service"
 )
 
 // confirm asks before an irreversible change. It returns false when there is no

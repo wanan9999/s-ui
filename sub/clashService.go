@@ -4,9 +4,9 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/alireza0/s-ui/logger"
-	"github.com/alireza0/s-ui/service"
-	"github.com/alireza0/s-ui/util"
+	"github.com/wanan9999/s-ui/logger"
+	"github.com/wanan9999/s-ui/service"
+	"github.com/wanan9999/s-ui/util"
 
 	"gopkg.in/yaml.v3"
 )

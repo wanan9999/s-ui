@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alireza0/s-ui/logger"
-	"github.com/alireza0/s-ui/util"
+	"github.com/wanan9999/s-ui/logger"
+	"github.com/wanan9999/s-ui/util"
 )
 
 type Link struct {

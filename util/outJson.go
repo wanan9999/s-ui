@@ -3,15 +3,15 @@ package util
 import (
 	"encoding/json"
 
-	"github.com/alireza0/s-ui/util/common"
+	"github.com/wanan9999/s-ui/util/common"
 
-	"github.com/alireza0/s-ui/database/model"
+	"github.com/wanan9999/s-ui/database/model"
 )
 
 // Fill Inbound's out_json
 func FillOutJson(i *model.Inbound, hostname string) error {
 	switch i.Type {
-	case "direct", "tun", "redirect", "tproxy":
+	case "l2tp", "direct", "tun", "redirect", "tproxy":
 		return nil
 	}
 	var outJson map[string]interface{}

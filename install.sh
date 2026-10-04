@@ -11,27 +11,17 @@ cur_dir=$(pwd)
 # Localization
 #
 # The installer speaks the six languages of the panel UI:
-#   en (default), fa, ru, vi, zhcn, zhtw
+#   zhcn (default), en, fa, ru, vi, zhtw
 # Pick one with the SUI_LANG environment variable, e.g.
 #   SUI_LANG=fa bash <(curl -Ls .../install.sh)
-# When SUI_LANG is unset the system $LANG is used as a hint.
+# When SUI_LANG is unset, simplified Chinese is used.
 #
 # Messages are stored in flat variables (MSG_<lang>_<key>) and read through
 # indirect expansion so the script also works on the older bash 3.2.
 #############################################
 
 detect_lang() {
-    local l="${SUI_LANG:-}"
-    if [[ -z "$l" ]]; then
-        case "${LANG:-}" in
-        fa*) l=fa ;;
-        ru*) l=ru ;;
-        vi*) l=vi ;;
-        zh_TW* | zh_HK* | zh-TW*) l=zhtw ;;
-        zh*) l=zhcn ;;
-        *) l=en ;;
-        esac
-    fi
+    local l="${SUI_LANG:-zhcn}"
     case "$l" in
     fa | ru | vi | zhcn | zhtw | en) ;;
     zh-cn | zh_cn | zhCN) l=zhcn ;;
@@ -320,17 +310,13 @@ fi
 arch() {
     case "$(uname -m)" in
     x86_64 | x64 | amd64) echo 'amd64' ;;
-    i*86 | x86) echo '386' ;;
     armv8* | armv8 | arm64 | aarch64) echo 'arm64' ;;
-    armv7* | armv7 | arm) echo 'armv7' ;;
-    armv6* | armv6) echo 'armv6' ;;
-    armv5* | armv5) echo 'armv5' ;;
-    s390x) echo 's390x' ;;
-    *) echo -e "${green}$(t unsupported_arch)${plain}" && rm -f install.sh && exit 1 ;;
+    *) echo -e "${red}$(t unsupported_arch)${plain}" >&2; return 1 ;;
     esac
 }
 
-echo "arch: $(arch)"
+install_arch=$(arch) || exit 1
+echo "arch: $install_arch"
 
 install_base() {
     echo -e "${yellow}$(t installing_base)${plain}"
@@ -526,7 +512,7 @@ install_s-ui() {
     local sums="$workdir/SHA256SUMS"
 
     if [ $# == 0 ]; then
-        last_version=$(curl -Ls "https://api.github.com/repos/alireza0/s-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+        last_version=$(curl -Ls "https://api.github.com/repos/wanan9999/s-ui/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
         if [[ ! -n "$last_version" ]]; then
             echo -e "${red}$(t fetch_fail)${plain}"
             exit 1
@@ -540,7 +526,7 @@ install_s-ui() {
     # No --no-check-certificate. It was on every download here, which turns the
     # whole install into an unauthenticated fetch: anyone able to intercept it
     # chooses the binary that then runs as root.
-    local base="https://github.com/alireza0/s-ui/releases/download/${last_version}"
+    local base="https://github.com/wanan9999/s-ui/releases/download/${last_version}"
     if ! fetch "${base}/s-ui-linux-$(arch).tar.gz" "$archive"; then
         if [ $# == 0 ]; then
             echo -e "${red}$(t download_fail)${plain}"

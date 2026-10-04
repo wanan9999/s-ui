@@ -1,307 +1,60 @@
-# S-UI
-**An Advanced Web Panel • Built on SagerNet/Sing-Box**
+# S-UI 中文版
 
-![](https://img.shields.io/github/v/release/alireza0/s-ui.svg)
-![S-UI Docker pull](https://img.shields.io/docker/pulls/alireza7/s-ui.svg)
-[![Go Report Card](https://goreportcard.com/badge/github.com/alireza0/s-ui)](https://goreportcard.com/report/github.com/alireza0/s-ui)
-[![Downloads](https://img.shields.io/github/downloads/alireza0/s-ui/total.svg)](https://img.shields.io/github/downloads/alireza0/s-ui/total.svg)
-[![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+基于 sing-box 的 Linux 代理管理面板，增加纯 Go L2TP/IPsec 入站。
+默认简体中文、`Asia/Shanghai` 时区；前端源码在 `frontend/` 本地维护。
+后端 SQLite 使用纯 Go 驱动，构建使用 `CGO_ENABLED=0`。
 
-> **Disclaimer:** This project is only for personal learning and communication, please do not use it for illegal purposes, please do not use it in a production environment
+## 安装
 
-**If you think this project is helpful to you, you may wish to give a**:star2:
-
-**Want to contribute?** See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, coding conventions, testing, and the pull request process.
-
-[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/alireza7)
-
-<a href="https://nowpayments.io/donation/alireza7" target="_blank" rel="noreferrer noopener">
-   <img src="https://nowpayments.io/images/embeds/donation-button-white.svg" alt="Crypto donation button by NOWPayments">
-</a>
-
-## Quick Overview
-| Features                               |      Enable?       |
-| -------------------------------------- | :----------------: |
-| Multi-Protocol                         | :heavy_check_mark: |
-| Multi-Language                         | :heavy_check_mark: |
-| Multi-Client/Inbound                   | :heavy_check_mark: |
-| Advanced Traffic Routing Interface     | :heavy_check_mark: |
-| Client & Traffic & System Status       | :heavy_check_mark: |
-| Subscription Link (link/json/clash + info)| :heavy_check_mark: |
-| Dark/Light Theme                       | :heavy_check_mark: |
-| API Interface                          | :heavy_check_mark: |
-
-## Supported Platforms
-| Platform | Architecture | Status |
-|----------|--------------|---------|
-| Linux    | amd64, arm64, armv7, armv6, armv5, 386, s390x | ✅ Supported |
-| Windows  | amd64, 386, arm64 | ✅ Supported |
-| macOS    | amd64, arm64 | 🚧 Experimental |
-
-## Screenshots
-
-!["Main"](https://github.com/alireza0/s-ui-frontend/raw/main/media/main.png)
-
-[Other UI Screenshots](https://github.com/alireza0/s-ui-frontend/blob/main/screenshots.md)
-
-## Documentation
-
-Full documentation lives in the [Wiki](https://github.com/alireza0/s-ui/wiki):
-
-| Page | Contents |
-|------|----------|
-| [Subscription Service](https://github.com/alireza0/s-ui/wiki/Subscription-Service) | Subscription URLs, the three formats, response headers |
-| [Subscription JSON Template](https://github.com/alireza0/s-ui/wiki/Subscription-JSON-Template) | Structure and supported keys of the sing-box subscription template |
-| [Subscription Clash Template](https://github.com/alireza0/s-ui/wiki/Subscription-Clash-Template) | The Clash.Meta template, proxy groups and filters |
-| [API Documentation](https://github.com/alireza0/s-ui/wiki/API-Documentation) | The token-authenticated REST API (`/apiv2`) |
-| [Configuration Objects](https://github.com/alireza0/s-ui/wiki/Configuration-Objects) | Shape of the objects read and written through the API |
-| [Settings Reference](https://github.com/alireza0/s-ui/wiki/Settings-Reference) | Every panel setting and its default |
-
-## Default Installation Information
-- Panel Port: 2095
-- Panel Path: /app/
-- Subscription Port: 2096
-- Subscription Path: /sub/
-- User/Password: admin
-
-## Install & Upgrade to Latest Version
-
-### Linux/macOS
-```sh
-bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)
-```
-
-#### Installer language
-
-The installer is available in the same six languages as the panel: `en` (default), `fa`, `ru`, `vi`, `zhcn`, `zhtw`. Choose one with the `SUI_LANG` environment variable (when unset, your system `$LANG` is used as a hint):
-
-```sh
-SUI_LANG=fa bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)
-```
-
-### Alpine Linux
-Alpine uses `apk` and OpenRC instead of `apt`/systemd. The install script detects Alpine automatically and sets up an OpenRC service. Since Alpine has no `bash` by default, install it first:
-
-```sh
-apk add bash
-bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/master/install.sh)
-```
-
-Manage the service with OpenRC: `rc-service s-ui start|stop|restart` and `rc-update add s-ui default`.
-
-### Windows
-1. Download the latest Windows release from [GitHub Releases](https://github.com/alireza0/s-ui/releases/latest)
-2. Extract the ZIP file
-3. Run `install-windows.bat` as Administrator
-4. Follow the installation wizard
-
-## Install legacy Version
-
-**Step 1:** To install your desired legacy version, add the version to the end of the installation command. e.g., ver `v1.5.0`:
-
-```sh
-VERSION=v1.5.0 && bash <(curl -Ls https://raw.githubusercontent.com/alireza0/s-ui/$VERSION/install.sh) $VERSION
-```
-
-## Manual installation
-
-### Linux/macOS
-1. Get the latest version of S-UI based on your OS/Architecture from GitHub: [https://github.com/alireza0/s-ui/releases/latest](https://github.com/alireza0/s-ui/releases/latest)
-2. **OPTIONAL** Get the latest version of `s-ui.sh` [https://raw.githubusercontent.com/alireza0/s-ui/master/s-ui.sh](https://raw.githubusercontent.com/alireza0/s-ui/master/s-ui.sh)
-3. **OPTIONAL** Copy `s-ui.sh` to /usr/bin/ and run `chmod +x /usr/bin/s-ui`.
-4. Extract s-ui tar.gz file to a directory of your choice and navigate to the directory where you extracted the tar.gz file.
-5. Copy *.service files to /etc/systemd/system/ and run `systemctl daemon-reload`.
-6. Enable autostart and start S-UI service using `systemctl enable s-ui --now`
-7. Start sing-box service using `systemctl enable sing-box --now`
-
-### Windows
-1. Get the latest Windows version from GitHub: [https://github.com/alireza0/s-ui/releases/latest](https://github.com/alireza0/s-ui/releases/latest)
-2. Download the appropriate Windows package (e.g., `s-ui-windows-amd64.zip`)
-3. Extract the ZIP file to a directory of your choice
-4. Run `install-windows.bat` as Administrator
-5. Follow the installation wizard
-6. Access the panel at http://localhost:2095/app
-
-## Uninstall S-UI
-
-### systemd
-```sh
-sudo -i
-
-systemctl disable s-ui  --now
-
-rm -f /etc/systemd/system/sing-box.service
-systemctl daemon-reload
-
-rm -fr /usr/local/s-ui
-rm /usr/bin/s-ui
-```
-
-### Alpine (OpenRC)
-```sh
-rc-service s-ui stop
-rc-update del s-ui default
-rm -f /etc/init.d/s-ui
-
-rm -fr /usr/local/s-ui
-rm /usr/bin/s-ui
-```
-
-## Install using Docker
-
-<details>
-   <summary>Click for details</summary>
-
-### Usage
-
-**Step 1:** Install Docker
-
-```shell
-curl -fsSL https://get.docker.com | sh
-```
-
-**Step 2:** Install S-UI
-
-> Docker compose method
-
-```shell
-mkdir s-ui && cd s-ui
-wget -q https://raw.githubusercontent.com/alireza0/s-ui/master/docker-compose.yml
-docker compose up -d
-```
-
-> Use docker
-
-```shell
-mkdir s-ui && cd s-ui
-docker run -itd \
-    -p 2095:2095 -p 2096:2096 -p 443:443 -p 80:80 \
-    -v $PWD/db/:/app/db/ \
-    -v $PWD/cert/:/root/cert/ \
-    --name s-ui --restart=unless-stopped \
-    alireza7/s-ui:latest
-```
-
-> Build your own image
-
-```shell
-git clone https://github.com/alireza0/s-ui
-git submodule update --init --recursive
-docker build -t s-ui .
-```
-
-</details>
-
-## Manual run ( contribution )
-
-<details>
-   <summary>Click for details</summary>
-
-### Build and run whole project
-```shell
-./runSUI.sh
-```
-
-### Clone the repository
-```shell
-# clone repository
-git clone https://github.com/alireza0/s-ui
-# clone submodules
-git submodule update --init --recursive
-```
-
-
-### - Frontend
-
-Visit [s-ui-frontend](https://github.com/alireza0/s-ui-frontend) for frontend code
-
-### - Backend
-> Please build frontend once before!
-
-To build backend:
-```shell
-# remove old frontend compiled files
-rm -fr web/html/*
-# apply new frontend compiled files
-cp -R frontend/dist/ web/html/
-# build
-go build -o sui main.go
-```
-
-To run backend (from root folder of repository):
-```shell
-./sui
-```
-
-</details>
-
-## Languages
-
-- English
-- Farsi
-- Vietnamese
-- Chinese (Simplified)
-- Chinese (Traditional)
-- Russian
-
-## Features
-
-- Supported protocols:
-  - General:  Mixed, SOCKS, HTTP, HTTPS, Direct, Redirect, TProxy
-  - V2Ray based: VLESS, VMess, Trojan, Shadowsocks
-  - Other protocols: ShadowTLS, Hysteria, Hysteria2, Naive, TUIC
-- Supports XTLS protocols
-- An advanced interface for routing traffic, incorporating PROXY Protocol, External, and Transparent Proxy, SSL Certificate, and Port
-- An advanced interface for inbound and outbound configuration
-- Clients’ traffic cap and expiration date
-- Displays online clients, inbounds and outbounds with traffic statistics, and system status monitoring
-- Subscription service with ability to add external links and subscription
-- HTTPS for secure access to the web panel and subscription service (self-provided domain + SSL certificate)
-- Dark/Light theme
-
-## Environment Variables
-
-<details>
-  <summary>Click for details</summary>
-
-### Usage
-
-| Variable       |                      Type                      | Default       |
-| -------------- | :--------------------------------------------: | :------------ |
-| SUI_LOG_LEVEL  | `"debug"` \| `"info"` \| `"warn"` \| `"error"` | `"info"`      |
-| SUI_DEBUG      |                   `boolean`                    | `false`       |
-| SUI_BIN_FOLDER |                    `string`                    | `"bin"`       |
-| SUI_DB_FOLDER  |                    `string`                    | `"db"`        |
-| SINGBOX_API    |                    `string`                    | -             |
-
-</details>
-
-## SSL Certificate
-
-<details>
-  <summary>Click for details</summary>
-
-### Certbot
+支持 Linux amd64、arm64。安装脚本及升级包来自本仓库：
 
 ```bash
-snap install core; snap refresh core
-snap install --classic certbot
-ln -s /snap/bin/certbot /usr/bin/certbot
-
-certbot certonly --standalone --register-unsafely-without-email --non-interactive --agree-tos -d <Your Domain Name>
+bash <(curl -fsSL https://raw.githubusercontent.com/wanan9999/s-ui/main/install.sh)
 ```
 
-</details>
+Docker：下载本仓库的 `docker-compose.yml` 后运行 `docker compose up -d`。
+镜像为 `ghcr.io/wanan9999/s-ui:latest`，由本仓库发布流水线生成。
+尚未发布镜像时，可在源码目录运行 `docker build -t ghcr.io/wanan9999/s-ui:latest .`。
+默认面板端口 `2095`，订阅端口 `2096`；登录后立即设置管理员凭据。
 
-## Third-party Projects
+## L2TP/IPsec 入站
 
-Community-made projects built around S-UI. These are not affiliated with or maintained by S-UI — use them at your own discretion:
+1. 添加 `L2TP/IPsec` 入站，填写服务器公网 IPv4、PSK 和私网地址池。
+2. 在用户页设置 L2TP 账号密码，绑定该入站。没有启用用户时不监听。
+3. 设置 sing-box DNS 服务器、出站与路由；按 `auth_user` 为账号指定出口。
+   默认配置保留 DNS 劫持规则，但需自行配置可用的 DNS 上游。
+4. 服务器防火墙与云安全组开放 UDP **500、4500**，客户端填写服务器、PSK、账号与密码。
+   不映射公网裸 UDP 1701，不需要安装 strongSwan、xl2tpd 或 pppd。
 
-- [itning/reset-s-ui-traffic](https://github.com/itning/reset-s-ui-traffic) — periodic traffic reset for all users
-- [zqh2333/s-ui-traffic-reset](https://github.com/zqh2333/s-ui-traffic-reset) — traffic reset tool
-- [Sownix21/SUI-Bot](https://github.com/Sownix21/SUI-Bot) - telegram bot
+数据路径：veepin IKEv1/IPsec → L2TP/PPP → 每会话独立 gVisor 栈 → sing-box DNS/路由/出站。
+服务端无需 `/dev/net/tun`、系统转发或 NAT。认证账号随连接传入路由和流量统计；
+修改账号会重建入站，当前连接随之断开。禁用、到期和流量限额沿用面板用户管理。
 
-> Building something on top of S-UI (a Telegram bot, monitoring, automation, ...)? Open an issue/PR to get it listed here.
+当前支持 **IPv4 TCP/UDP**；ICMP 等其他 IP 协议拒绝转发。原生 L2TP 配置须手动填写，
+不生成 sing-box/Clash 不支持的 L2TP 出站订阅。客户端隧道外 IPv6 不在本入站控制范围。
+公网手机、Windows、长时间重连及 rekey 仍须按实际部署验收；自动测试不等于公网验收。
 
-## Stargazers over Time
-[![Stargazers over time](https://starchart.cc/alireza0/s-ui.svg)](https://starchart.cc/alireza0/s-ui)
+## 开发与验证
+
+Go 版本见 `go.mod`，Node.js 26。Linux 构建：
+
+```bash
+sh build.sh
+. ./build-tags.sh
+CGO_ENABLED=0 go test -tags "$(tags_for test)" ./...
+CGO_ENABLED=0 go vet -tags "$(tags_for test)" ./...
+cd frontend && npm ci && npm run lint && npm test && npm run build
+```
+
+Naive 出站通过 purego 加载 `libcronet.so`；发布包和镜像附带该库。
+因此 `CGO_ENABLED=0` 不表示所有可选协议都没有动态库依赖。
+Linux CI 验证完整 L2TP 拨号、账号分流、DNS 和踢下线，运行在独立网络命名空间。
+推送 `v*` 标签发布 Linux 包和 GHCR 镜像；普通主分支推送只测试、构建。
+
+## 来源与许可
+
+本项目基于 [alireza0/s-ui](https://github.com/alireza0/s-ui)，前端基于
+[alireza0/s-ui-frontend](https://github.com/alireza0/s-ui-frontend) 的
+`f859e16953cd733293618f626cc19b8466e00fd3`。保留原作者版权与 GPL-3.0 许可。
+L2TP/IPsec 使用 [wanan9999/veepin](https://github.com/wanan9999/veepin)（MIT），
+其上游为 xen0bit/veepin。

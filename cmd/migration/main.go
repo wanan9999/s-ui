@@ -6,9 +6,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alireza0/s-ui/config"
+	"github.com/wanan9999/s-ui/config"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 

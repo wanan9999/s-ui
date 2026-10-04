@@ -1,4 +1,4 @@
-//go:build with_usbip && (linux || (darwin && cgo) || windows)
+//go:build with_usbip && linux
 
 package core
 

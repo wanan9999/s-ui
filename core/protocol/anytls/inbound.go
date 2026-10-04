@@ -5,7 +5,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/alireza0/s-ui/core/usersession"
+	"github.com/wanan9999/s-ui/core/usersession"
 
 	"github.com/sagernet/sing-box/adapter"
 	"github.com/sagernet/sing-box/adapter/inbound"

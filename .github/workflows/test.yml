@@ -35,7 +35,9 @@ jobs:
           fi
 
       - name: Vet
-        run: go vet ./...
+        run: |
+          . ./build-tags.sh
+          CGO_ENABLED=0 go vet -tags "$(tags_for test)" ./...
 
       # A list pasted back into a workflow or Dockerfile compiles fine and then
       # drifts in silence. with_qui[c] so the pattern misses its own line.
@@ -53,14 +55,13 @@ jobs:
             exit 1
           fi
 
-      # "test", not "dev": same protocols, minus the cronet tags no stock
-      # toolchain can link. It is what release.yml builds for armv6/armv5/s390x.
+      # Tests do not load the optional Naive dynamic library.
       - name: Test
         run: |
           set -e
           . ./build-tags.sh
           TAGS=$(tags_for test)
-          go test -tags "$TAGS" ./...
+          CGO_ENABLED=0 go test -tags "$TAGS" ./...
 
       # Scoped to the packages that are clean today, so this fails on a race we
       # introduce rather than the known upstream one in route.NetworkManager.
@@ -69,4 +70,19 @@ jobs:
           set -e
           . ./build-tags.sh
           TAGS=$(tags_for test)
-          go test -race -short -tags "$TAGS" ./api/... ./service/... ./sub/... ./database/... ./util/... ./logger/... ./network/...
+          go test -race -short -tags "$TAGS" ./api/... ./service/... ./sub/... ./database/... ./util/... ./logger/... ./network/... ./core/protocol/l2tp/...
+
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '26'
+      - name: 前端检查
+        working-directory: frontend
+        run: npm ci && npm run lint && npm test && npm run build
+
+      - name: L2TP 完整链路（隔离网络）
+        run: |
+          set -eu
+          . ./build-tags.sh
+          CGO_ENABLED=0 go test -c -tags "$(tags_for test)" -o /tmp/sui-core.test ./core
+          sudo modprobe tun
+          sudo unshare --net sh -c 'ip link set lo up; SUI_L2TP_INTEGRATION=1 /tmp/sui-core.test -test.run ^TestL2TPFullPipeline$ -test.v -test.timeout 3m'

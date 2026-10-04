@@ -26,7 +26,7 @@ func TestInboundRegistry(t *testing.T) {
 		C.TypeTrojan, C.TypeVLESS, C.TypeAnyTLS, C.TypeHysteria, C.TypeHysteria2,
 		C.TypeTUIC, C.TypeShadowTLS, C.TypeNaive, C.TypeTun, C.TypeDirect,
 		// new in 1.14
-		C.TypeSnell, C.TypeCloudflared,
+		C.TypeSnell, C.TypeCloudflared, "l2tp",
 	)
 }
 

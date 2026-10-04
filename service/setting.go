@@ -3,16 +3,16 @@ package service
 import (
 	"encoding/json"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
+	_ "time/tzdata"
 
-	"github.com/alireza0/s-ui/config"
-	"github.com/alireza0/s-ui/database"
-	"github.com/alireza0/s-ui/database/model"
-	"github.com/alireza0/s-ui/logger"
-	"github.com/alireza0/s-ui/util/common"
+	"github.com/wanan9999/s-ui/config"
+	"github.com/wanan9999/s-ui/database"
+	"github.com/wanan9999/s-ui/database/model"
+	"github.com/wanan9999/s-ui/logger"
+	"github.com/wanan9999/s-ui/util/common"
 
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
@@ -78,7 +78,7 @@ var defaultValueMap = map[string]string{
 	"sessionMaxAge":      "0",
 	"trafficAge":         "30",
 	"statsBucketSeconds": "60",
-	"timeLocation":       "Asia/Tehran",
+	"timeLocation":       "Asia/Shanghai",
 	"subListen":          "",
 	"subPort":            "2096",
 	"subPath":            "/sub/",
@@ -305,9 +305,6 @@ func (s *SettingService) GetTimeLocation() (*time.Location, error) {
 	l, err := s.getString("timeLocation")
 	if err != nil {
 		return nil, err
-	}
-	if runtime.GOOS == "windows" {
-		l = "Local"
 	}
 	location, err := time.LoadLocation(l)
 	if err != nil {

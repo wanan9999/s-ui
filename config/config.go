@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -52,10 +51,6 @@ func GetDBFolderPath() string {
 	if dbFolderPath == "" {
 		dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
 		if err != nil {
-			// Cross-platform fallback path
-			if runtime.GOOS == "windows" {
-				return "C:\\Program Files\\s-ui\\db"
-			}
 			return "/usr/local/s-ui/db"
 		}
 		dbFolderPath = filepath.Join(dir, "db")
@@ -65,4 +60,12 @@ func GetDBFolderPath() string {
 
 func GetDBPath() string {
 	return fmt.Sprintf("%s/%s.db", GetDBFolderPath(), GetName())
+}
+
+// The process default matches the panel and container defaults. Operators may
+// explicitly override TZ without changing system-wide timezone configuration.
+func init() {
+	if os.Getenv("TZ") == "" {
+		_ = os.Setenv("TZ", "Asia/Shanghai")
+	}
 }
