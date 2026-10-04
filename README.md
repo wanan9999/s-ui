@@ -1,60 +1,112 @@
 # S-UI 中文版
 
-基于 sing-box 的 Linux 代理管理面板，增加纯 Go L2TP/IPsec 入站。
-默认简体中文、`Asia/Shanghai` 时区；前端源码在 `frontend/` 本地维护。
-后端 SQLite 使用纯 Go 驱动，构建使用 `CGO_ENABLED=0`。
+Linux 代理管理面板，基于 sing-box，支持纯 Go **L2TP/IPsec 入站**、多用户分流和统一 DNS。
+
+- 默认简体中文、北京时间（`Asia/Shanghai`）。
+- 支持 Linux amd64 / arm64，纯 Go SQLite，`CGO_ENABLED=0` 构建。
+- 前端源码在 `frontend/` 本地维护，无需拉取子模块。
+
+[安装](#安装) · [连接 L2TP](#连接-l2tp) · [多用户分流](#多用户分流) · [统一 DNS](#统一-dns) · [开发说明](CONTRIBUTING.md)
 
 ## 安装
-
-支持 Linux amd64、arm64。安装脚本及升级包来自本仓库：
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanan9999/s-ui/main/install.sh)
 ```
 
-Docker：下载本仓库的 `docker-compose.yml` 后运行 `docker compose up -d`。
-镜像为 `ghcr.io/wanan9999/s-ui:latest`，由本仓库发布流水线生成。
-尚未发布镜像时，可在源码目录运行 `docker build -t ghcr.io/wanan9999/s-ui:latest .`。
-默认面板端口 `2095`，订阅端口 `2096`；登录后立即设置管理员凭据。
+也可下载 [发行包](https://github.com/wanan9999/s-ui/releases)。默认面板端口 **2095**，订阅端口 **2096**；首次登录后修改管理员凭据。
 
-## L2TP/IPsec 入站
+Docker 使用仓库中的 [docker-compose.yml](docker-compose.yml)，采用 Linux host 网络，直接使用宿主机端口。运行 `docker compose up -d`。镜像为 `ghcr.io/wanan9999/s-ui:latest`
 
-1. 添加 `L2TP/IPsec` 入站，填写服务器公网 IPv4、PSK 和私网地址池。
-2. 在用户页设置 L2TP 账号密码，绑定该入站。没有启用用户时不监听。
-3. 设置 sing-box DNS 服务器、出站与路由；按 `auth_user` 为账号指定出口。
-   默认配置保留 DNS 劫持规则，但需自行配置可用的 DNS 上游。
-4. 服务器防火墙与云安全组开放 UDP **500、4500**，客户端填写服务器、PSK、账号与密码。
-   不映射公网裸 UDP 1701，不需要安装 strongSwan、xl2tpd 或 pppd。
+## 连接 L2TP
 
-数据路径：veepin IKEv1/IPsec → L2TP/PPP → 每会话独立 gVisor 栈 → sing-box DNS/路由/出站。
-服务端无需 `/dev/net/tun`、系统转发或 NAT。认证账号随连接传入路由和流量统计；
-修改账号会重建入站，当前连接随之断开。禁用、到期和流量限额沿用面板用户管理。
+1. 在 **入站管理** 添加类型为 `L2TP/IPsec` 的入站，标签例如 `l2tp-in`。
+2. 填写 **服务器公网 IPv4**、**IPsec 预共享密钥（PSK）**。
+3. 在 **用户管理** 添加用户，设置 L2TP 用户名、密码并关联该入站；没有启用用户时入站不监听。
+4. 按下文配置出站、路由和 DNS。服务器防火墙及云安全组开放 **UDP 500、4500**。
+5. 客户端选择 L2TP/IPsec，填写服务器公网 IP、PSK、用户名和密码。
 
-当前支持 **IPv4 TCP/UDP**；ICMP 等其他 IP 协议拒绝转发。原生 L2TP 配置须手动填写，
-不生成 sing-box/Clash 不支持的 L2TP 出站订阅。客户端隧道外 IPv6 不在本入站控制范围。
-公网手机、Windows、长时间重连及 rekey 仍须按实际部署验收；自动测试不等于公网验收。
+无需开放公网裸 UDP 1701，无需安装 strongSwan、xl2tpd、pppd，也无需 `/dev/net/tun`、系统转发或 NAT。已有 VPN 服务须先停止，避免端口冲突。
 
-## 开发与验证
+## 多用户分流
 
-Go 版本见 `go.mod`，Node.js 26。Linux 构建：
+示例：`alice` 走 `exit-a`，`bob` 走 `exit-b`。请将示例名称替换成自己的账号和标签。
 
-```bash
-sh build.sh
-. ./build-tags.sh
-CGO_ENABLED=0 go test -tags "$(tags_for test)" ./...
-CGO_ENABLED=0 go vet -tags "$(tags_for test)" ./...
-cd frontend && npm ci && npm run lint && npm test && npm run build
-```
+1. 在 **出站管理** 添加两个代理出站，标签分别为 `exit-a`、`exit-b`。
+2. 打开 **路由列表 → 添加规则**。
+3. 点击 **规则选项**，开启 **入站管理**和 **用户管理**，然后按下表添加两条规则。每条完成后点击弹窗的 **保存**。
 
-Naive 出站通过 purego 加载 `libcronet.so`；发布包和镜像附带该库。
-因此 `CGO_ENABLED=0` 不表示所有可选协议都没有动态库依赖。
-Linux CI 验证完整 L2TP 拨号、账号分流、DNS 和踢下线，运行在独立网络命名空间。
-推送 `v*` 标签发布 Linux 包和 GHCR 镜像；普通主分支推送只测试、构建。
+| 字段 | 第一条规则 | 第二条规则 |
+|---|---|---|
+| 入站管理 | `l2tp-in` | `l2tp-in` |
+| 用户管理 | `alice` | `bob` |
+| 操作 | `Route` | `Route` |
+| 出站 | `exit-a` | `exit-b` |
+
+**用户管理**匹配的是认证用户名，L2TP 用户名应与所选用户名称一致；不要填写备注或客户端 IP。当前面板的路由动作仍显示英文 `Route`、`Reject`、`Hijack DNS`。
+
+4. 再添加一条兜底规则：只开启 **入站管理**并选择 `l2tp-in`，**操作**选择 `Reject`，防止没有分流规则的账号使用默认直连。
+5. 拖动规则卡片排序：**DNS 劫持 → alice → bob → l2tp-in 的 Reject**，将这组规则放在通用直连规则前面。DNS 劫持按下一节添加。
+6. 点击 **路由列表**页面顶部的 **保存**。
+
+## 统一 DNS
+
+**配置一次，所有入站进入核心的普通 DNS 查询统一交给 DoH。** 由服务器直接通过 HTTPS 连接 DNS 服务；解析器看到的是服务器出口 IP，业务按账号走各自出站。
+
+> 新安装的 DNS 列表为空，核心会使用系统 DNS，并非默认防泄漏。请完成以下设置。客户端自带 DoH/DoT、绕过 VPN 的流量和隧道外 IPv6 不受普通 DNS 劫持控制。
+
+### 1. 添加一个 DNS 服务器
+
+打开 **DNS → 添加 DNS 服务器**，填写：
+
+| 面板字段 | 值 |
+|---|---|
+| 类型 | `HTTPS` |
+| 标签 | `global-doh` |
+| 地址 | `1.1.1.1` |
+| HTTP 请求路径 | `/dns-query` |
+
+在同一弹窗继续设置：
+
+1. 开启 **启用 TLS**，点击 **TLS 选项**并开启 `SNI`，填写 `cloudflare-dns.com`。
+2. 点击 **保存**。
+
+### 2. 设为全局 DNS
+
+回到 **DNS**页面的 **基础信息**：
+
+- **最终**：选择 `global-doh`。
+- **域名解析策略**：选择 `ipv4_only`。
+
+若有已有的 **DNS 规则**，将其中 `路由` 操作的服务器统一改为 `global-doh`；不再需要的规则可删除。保留需要的拒绝规则，但它们匹配的查询不会发送到 DoH。移除规则中自行设置的客户端子网，避免规则覆盖全局设置。点击页面顶部的 **保存**。
+
+### 3. 全局接管普通 DNS
+
+1. 打开 **路由列表 → 添加规则**。
+2. 在 **规则选项**开启 **端口**，填写 `53`；开启 **网络**，选择 `tcp` 和 `udp`。
+3. **操作**选择 `Hijack DNS`，点击弹窗 **保存**。
+4. 将此规则卡片拖到第一位，再点击页面顶部 **保存**。
+
+已有按 `dns` 协议匹配的 `Hijack DNS` 规则可删除，避免重复。
+
+### 4. 确认生效
+
+页面顶部 **保存**会触发核心重新加载，可能断开已有连接；弹窗 **保存**只更新当前页面，不能省略页面顶部的保存。等待核心运行正常后重连客户端。
+
+- 分别连接两个账号，确认业务公网 IP 对应各自出站。
+- 测试普通 DNS 解析，确认使用配置的 DoH 服务。
+- 测试时临时将 `global-doh` 的 **地址**改为不可达的测试地址，用未缓存的新域名查询：应解析失败。测试后恢复地址并保存。
+
+DNS 检测显示 Cloudflare 解析器地址是正常的，不要求等于代理出口 IP。此方案避免普通 DNS 使用系统解析器和明文上游，但不会隐藏服务器出口 IP；严格防泄漏验收还需抓包。
+
+## 使用边界
+
+- L2TP 当前转发 **IPv4 TCP/UDP**，不转发 ICMP；客户端应使用全局 VPN 并阻断隧道外 IPv6。
+- 修改 L2TP 账号会重建对应入站并断开连接。禁用、到期和流量限额沿用用户管理。
+- L2TP 客户端须手动配置，不生成 L2TP 出站订阅。
 
 ## 来源与许可
 
-本项目基于 [alireza0/s-ui](https://github.com/alireza0/s-ui)，前端基于
-[alireza0/s-ui-frontend](https://github.com/alireza0/s-ui-frontend) 的
-`f859e16953cd733293618f626cc19b8466e00fd3`。保留原作者版权与 GPL-3.0 许可。
-L2TP/IPsec 使用 [wanan9999/veepin](https://github.com/wanan9999/veepin)（MIT），
-其上游为 xen0bit/veepin。
+基于 [alireza0/s-ui](https://github.com/alireza0/s-ui)；前端基于 [alireza0/s-ui-frontend](https://github.com/alireza0/s-ui-frontend) 的 `f859e16953cd733293618f626cc19b8466e00fd3`，保留原作者版权与 GPL-3.0 许可。
+
+L2TP/IPsec 使用 [wanan9999/veepin](https://github.com/wanan9999/veepin)（MIT，上游为 xen0bit/veepin）。

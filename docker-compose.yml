@@ -5,11 +5,7 @@ services:
     restart: unless-stopped
     environment:
       TZ: Asia/Shanghai
-    ports:
-      - "2095:2095/tcp"
-      - "2096:2096/tcp"
-      - "500:500/udp"
-      - "4500:4500/udp"
+    network_mode: host
     volumes:
       - ./db:/app/db
       - ./cert:/app/cert
