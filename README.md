@@ -14,9 +14,16 @@ Linux 代理管理面板，基于 sing-box，支持纯 Go **L2TP/IPsec 入站**�
 SUI_LANG=zhcn bash <(curl -fsSL https://raw.githubusercontent.com/wanan9999/s-ui/main/install.sh)
 ```
 
-也可下载 [发行包](https://github.com/wanan9999/s-ui/releases)。默认面板端口 **2095**，订阅端口 **2096**；首次登录后修改管理员凭据。
 
 Docker 使用仓库中的 [docker-compose.yml](docker-compose.yml)，采用 Linux host 网络，直接使用宿主机端口。运行 `docker compose up -d`。镜像为 `ghcr.io/wanan9999/s-ui:latest`
+
+
+## 默认安装信息
+- 面板端口：2095
+- 面板路径：/app/
+- 订阅端口：2096
+- 订阅路径：/sub/
+- 用户名/密码：admin
 
 ## 连接 L2TP
 
