@@ -100,6 +100,35 @@ func TestPolicyDNSReloadPreservesBusinessConnections(t *testing.T) {
 	policyEcho(t, conn)
 }
 
+// A candidate's interface monitor can reset networking before publication.
+// Exercise that callback directly so this also detects cross-generation
+// ownership on machines with only a loopback interface.
+func TestPolicyCandidateNetworkResetIsIsolated(t *testing.T) {
+	c := policyTestCore(t)
+	conn := policyTestConnection(t, c, "alice")
+	for _, commit := range []bool{false, true} {
+		update, err := c.PreparePolicy(policyTestConfig("192.0.2.2", "5s"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer update.Abort()
+		update.runtime.network.ResetNetwork(context.Background())
+		policyEcho(t, conn)
+		if commit {
+			update.Commit()
+			fresh := policyTestConnection(t, c, "alice")
+			update.runtime.network.ResetNetwork(context.Background())
+			_ = fresh.SetReadDeadline(time.Now().Add(time.Second))
+			if _, err := fresh.Read(make([]byte, 1)); err != io.EOF {
+				t.Fatalf("network reset did not close its own generation: %v", err)
+			}
+		} else {
+			update.Abort()
+		}
+		policyEcho(t, conn)
+	}
+}
+
 func TestPolicyOutboundReloadClosesOnlyDependentConnections(t *testing.T) {
 	c := policyTestCore(t)
 	alice := policyTestConnection(t, c, "alice")

@@ -82,15 +82,18 @@ func (b *Box) preparePolicy(options option.Options) (p *policyRuntime, err error
 	p.owned = append(p.owned, p.dns)
 	service.MustRegister[adapter.DNSRouter](ctx, &policyDNS{DNSRouter: p.dns, generation: p.generation, policy: b.policy})
 	service.MustRegister[adapter.DNSRuleSetUpdateValidator](ctx, p.dns)
+	// NetworkManager captures ConnectionManager in its constructor. Register
+	// this generation's owner first: an initial interface notification must
+	// never close connections belonging to the still-active policy.
+	p.connection = route.NewConnectionManager(f.NewLogger("connection"))
+	p.owned = append(p.owned, p.connection)
+	service.MustRegister[adapter.ConnectionManager](ctx, p.connection)
 	p.network, err = route.NewNetworkManager(ctx, f.NewLogger("network"), r, d)
 	if err != nil {
 		return p, err
 	}
 	p.owned = append(p.owned, p.network)
 	service.MustRegister[adapter.NetworkManager](ctx, p.network)
-	p.connection = route.NewConnectionManager(f.NewLogger("connection"))
-	p.owned = append(p.owned, p.connection)
-	service.MustRegister[adapter.ConnectionManager](ctx, p.connection)
 	h := httpclient.NewManager(ctx, f.NewLogger("httpclient"), options.HTTPClients, r.DefaultHTTPClient)
 	p.http = h
 	p.owned = append(p.owned, h)
