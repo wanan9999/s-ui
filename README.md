@@ -73,6 +73,7 @@ Docker 使用仓库中的 [docker-compose.yml](docker-compose.yml)，采用 Linu
 
 ## 使用边界
 
+- 每个 L2TP 会话自动使用 PPP 协商的 MTU，无需在面板手动设置。
 - L2TP 当前转发 **IPv4 TCP/UDP**，不转发 ICMP；客户端应使用全局 VPN 并阻断隧道外 IPv6。
 - 修改 L2TP 账号会重建对应入站并断开连接。禁用、到期和流量限额沿用用户管理。
 - L2TP 客户端须手动配置，不生成 L2TP 出站订阅。

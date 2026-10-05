@@ -24,9 +24,9 @@ type packetDevice struct {
 	once     sync.Once
 }
 
-func newPacketDevice(parent context.Context) *packetDevice {
+func newPacketDevice(parent context.Context, mtu uint16) *packetDevice {
 	ctx, cancel := context.WithCancel(parent)
-	return &packetDevice{ctx: ctx, cancel: cancel, endpoint: channel.New(128, 1400, "")}
+	return &packetDevice{ctx: ctx, cancel: cancel, endpoint: channel.New(128, uint32(mtu), "")}
 }
 func (d *packetDevice) Name() (string, error)                { return "l2tp-memory", nil }
 func (d *packetDevice) Start() error                         { return nil }

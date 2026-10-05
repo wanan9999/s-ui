@@ -59,8 +59,8 @@ func (i *Inbound) Start(stage adapter.StartStage) error {
 		PSK: i.options.PSK, Users: users, Pool: i.options.Pool,
 		Logger: slog.New(protocolLogHandler{logger: i.logger}),
 		DNS:    []net.IP{net.IP(gateway.AsSlice())},
-		PacketDeviceFactory: func(user string, address net.IP) (vpn.PacketDevice, error) {
-			return newSessionDevice(i.ctx, i, user, netip.MustParseAddr(address.String()), netip.PrefixFrom(gateway, pool.Bits()))
+		PacketDeviceFactory: func(user string, address net.IP, mtu uint16) (vpn.PacketDevice, error) {
+			return newSessionDevice(i.ctx, i, user, netip.MustParseAddr(address.String()), netip.PrefixFrom(gateway, pool.Bits()), mtu)
 		},
 	})
 	if err != nil {
@@ -140,10 +140,10 @@ func (h *sessionHandler) NewDNSPacket(payload []byte, source, destination M.Sock
 	h.inbound.router.HijackDNSPacket(log.ContextWithNewID(h.inbound.ctx), payload, writer, h.metadata(N.NetworkUDP, source, destination))
 }
 
-func newSessionDevice(ctx context.Context, i *Inbound, user string, address netip.Addr, gateway netip.Prefix) (*packetDevice, error) {
-	d := newPacketDevice(ctx)
+func newSessionDevice(ctx context.Context, i *Inbound, user string, address netip.Addr, gateway netip.Prefix, mtu uint16) (*packetDevice, error) {
+	d := newPacketDevice(ctx, mtu)
 	stack, err := tun.NewStack("gvisor", tun.StackOptions{
-		Context: d.ctx, Tun: d, TunOptions: tun.Options{MTU: 1400, Inet4Address: []netip.Prefix{gateway}},
+		Context: d.ctx, Tun: d, TunOptions: tun.Options{MTU: uint32(mtu), Inet4Address: []netip.Prefix{gateway}},
 		UDPTimeout: 5 * time.Minute, ICMPTimeout: time.Second,
 		Handler: &sessionHandler{inbound: i, user: user, address: address}, Logger: i.logger,
 	})

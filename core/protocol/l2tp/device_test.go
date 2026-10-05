@@ -3,6 +3,7 @@
 package l2tp
 
 import (
+	"bytes"
 	"context"
 	"io"
 	"net"
@@ -74,11 +75,18 @@ func TestSessionStackTCPUDPAndIdentity(t *testing.T) {
 	// identities and flows must remain separate even with identical addresses.
 	for _, user := range []string{"alice", "bob"} {
 		t.Run(user, func(t *testing.T) {
-			d, err := newSessionDevice(ctx, in, user, netip.MustParseAddr("10.20.0.2"), netip.MustParsePrefix("10.20.0.1/24"))
+			mtu := uint16(1400)
+			if user == "bob" {
+				mtu = 576
+			}
+			d, err := newSessionDevice(ctx, in, user, netip.MustParseAddr("10.20.0.2"), netip.MustParsePrefix("10.20.0.1/24"), mtu)
 			if err != nil {
 				t.Fatal(err)
 			}
 			defer d.Close()
+			if d.endpoint.MTU() != uint32(mtu) {
+				t.Fatal("negotiated MRU was not applied to link endpoint")
+			}
 			s := gs.New(gs.Options{NetworkProtocols: []gs.NetworkProtocolFactory{ipv4.NewProtocol}, TransportProtocols: []gs.TransportProtocolFactory{tcp.NewProtocol, udp.NewProtocol}})
 			defer s.Close()
 			ep := channel.New(128, 1400, "")
@@ -126,16 +134,20 @@ func TestSessionStackTCPUDPAndIdentity(t *testing.T) {
 			}
 			defer udpConn.Close()
 			for _, conn := range []net.Conn{tcpConn, udpConn} {
+				payload := []byte(user)
+				if conn == tcpConn {
+					payload = bytes.Repeat(payload, 1024)
+				}
 				conn.SetDeadline(time.Now().Add(3 * time.Second))
-				if _, err = conn.Write([]byte(user)); err != nil {
+				if _, err = conn.Write(payload); err != nil {
 					t.Fatal(err)
 				}
-				reply := make([]byte, len(user))
+				reply := make([]byte, len(payload))
 				if _, err = io.ReadFull(conn, reply); err != nil {
 					t.Fatal(err)
 				}
-				if string(reply) != user {
-					t.Fatalf("reply %q", reply)
+				if !bytes.Equal(reply, payload) {
+					t.Fatal("echo payload changed")
 				}
 				select {
 				case m := <-router.events:
