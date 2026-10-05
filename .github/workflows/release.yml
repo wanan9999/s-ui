@@ -8,9 +8,11 @@ permissions:
   contents: read
 jobs:
   test:
+    if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/test.yml
   build:
     needs: test
+    if: ${{ !cancelled() && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:

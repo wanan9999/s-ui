@@ -1,7 +1,7 @@
 name: Test
 
-# No push trigger: release.yml calls this as its gate, so a push would otherwise
-# run the suite twice.
+# Run manually or as a release gate. Ordinary main pushes skip the test job
+# in release.yml and only build artifacts.
 on:
   workflow_dispatch:
   workflow_call:
