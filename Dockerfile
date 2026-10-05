@@ -21,7 +21,6 @@ RUN apk upgrade --no-cache --scripts=no apk-tools && \
     bash \
     curl
 
-
 RUN CRONET_ARCH="$TARGETARCH" && \
     CRONET_URL="https://github.com/SagerNet/cronet-go/releases/latest/download/libcronet-linux-${CRONET_ARCH}.so"; \
     echo "Downloading $CRONET_URL" && \
@@ -38,8 +37,6 @@ RUN if [ "$TARGETARCH" = "arm" ]; then export GOARM=7; [ "$TARGETVARIANT" = "v6"
     go build -trimpath -buildvcs=false -ldflags="$LDFLAGS" -tags "$TAGS" -o sui .
 
 FROM alpine:3.24.1@sha256:28bd5fe8b56d1bd048e5babf5b10710ebe0bae67db86916198a6eec434943f8b
-LABEL org.opencontainers.image.authors="wanan9999"
-LABEL org.opencontainers.image.source="https://github.com/wanan9999/s-ui"
 ENV TZ=Asia/Shanghai
 WORKDIR /app
 RUN set -ex && apk upgrade --no-cache --scripts=no apk-tools && \
