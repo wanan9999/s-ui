@@ -5,6 +5,7 @@ package l2tp
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net"
 	"net/netip"
 	"sync"
@@ -56,7 +57,8 @@ func (i *Inbound) Start(stage adapter.StartStage) error {
 	srv, err := vpn.NewServer(vpn.ServerConfig{
 		ListenIP: i.options.Listen, PublicIP: i.options.PublicIP, Port: int(i.options.ListenPort),
 		PSK: i.options.PSK, Users: users, Pool: i.options.Pool,
-		DNS: []net.IP{net.IP(gateway.AsSlice())},
+		Logger: slog.New(protocolLogHandler{logger: i.logger}),
+		DNS:    []net.IP{net.IP(gateway.AsSlice())},
 		PacketDeviceFactory: func(user string, address net.IP) (vpn.PacketDevice, error) {
 			return newSessionDevice(i.ctx, i, user, netip.MustParseAddr(address.String()), netip.PrefixFrom(gateway, pool.Bits()))
 		},
