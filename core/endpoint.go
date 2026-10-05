@@ -3,7 +3,6 @@ package core
 import (
 	"github.com/wanan9999/s-ui/logger"
 
-	"github.com/sagernet/sing-box/adapter"
 	"github.com/sagernet/sing-box/option"
 )
 
@@ -23,8 +22,8 @@ func (c *Core) AddInbound(config []byte) error {
 	}
 
 	return box.inbound.Create(
-		box.ctx,
-		box.router,
+		box.accessContext(),
+		box.policy,
 		box.logFactory.NewLogger("inbound/"+inbound_config.Type+"["+inbound_config.Tag+"]"),
 		inbound_config.Tag,
 		inbound_config.Type,
@@ -40,38 +39,6 @@ func (c *Core) RemoveInbound(tag string) error {
 	return box.inbound.Remove(tag)
 }
 
-func (c *Core) AddOutbound(config []byte) error {
-	box, err := c.running()
-	if err != nil {
-		return err
-	}
-	var outbound_config option.Outbound
-	if err = outbound_config.UnmarshalJSONContext(box.ctx, config); err != nil {
-		return err
-	}
-
-	outboundCtx := adapter.WithContext(box.ctx, &adapter.InboundContext{
-		Outbound: outbound_config.Tag,
-	})
-
-	return box.outbound.Create(
-		outboundCtx,
-		box.router,
-		box.logFactory.NewLogger("outbound/"+outbound_config.Type+"["+outbound_config.Tag+"]"),
-		outbound_config.Tag,
-		outbound_config.Type,
-		outbound_config.Options)
-}
-
-func (c *Core) RemoveOutbound(tag string) error {
-	box, err := c.running()
-	if err != nil {
-		return err
-	}
-	logger.Info("remove outbound: ", tag)
-	return box.outbound.Remove(tag)
-}
-
 func (c *Core) AddEndpoint(config []byte) error {
 	box, err := c.running()
 	if err != nil {
@@ -83,8 +50,8 @@ func (c *Core) AddEndpoint(config []byte) error {
 	}
 
 	return box.endpoint.Create(
-		box.ctx,
-		box.router,
+		box.accessContext(),
+		box.policy,
 		box.logFactory.NewLogger("endpoint/"+endpoint_config.Type+"["+endpoint_config.Tag+"]"),
 		endpoint_config.Tag,
 		endpoint_config.Type,
@@ -111,7 +78,7 @@ func (c *Core) AddService(config []byte) error {
 	}
 
 	return box.service.Create(
-		box.ctx,
+		box.accessContext(),
 		box.logFactory.NewLogger("service/"+srv_config.Type+"["+srv_config.Tag+"]"),
 		srv_config.Tag,
 		srv_config.Type,

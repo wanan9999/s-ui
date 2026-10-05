@@ -27,13 +27,15 @@ func (c *Core) CheckOutbound(tag string, link string) (result CheckOutboundResul
 		return result
 	}
 
-	ob, ok := box.outbound.Outbound(tag)
+	generation := box.policy.acquire()
+	defer generation.release()
+	ob, ok := generation.runtime.outbound.Outbound(tag)
 	if !ok {
 		result.Error = "outbound not found"
 		return result
 	}
 
-	ctx, cancel := context.WithTimeout(box.ctx, checkTimeout)
+	ctx, cancel := context.WithTimeout(generation.runtime.ctx, checkTimeout)
 	defer cancel()
 
 	delay, err := urltest.URLTest(ctx, link, ob)

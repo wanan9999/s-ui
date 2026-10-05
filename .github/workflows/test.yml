@@ -70,6 +70,7 @@ jobs:
           . ./build-tags.sh
           TAGS=$(tags_for test)
           go test -race -short -tags "$TAGS" ./api/... ./service/... ./sub/... ./database/... ./util/... ./logger/... ./network/... ./core/protocol/l2tp/...
+          go test -race -tags "$TAGS" ./core -run '^Test(SessionTracker|RetiredPolicy|PolicyConcurrent|PolicyInvalidation|PolicyUDP)'
 
       - uses: actions/setup-node@v7
         with:

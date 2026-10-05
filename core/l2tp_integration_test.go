@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"os"
 	"os/exec"
+	"strings"
 	"testing"
 	"time"
 
@@ -89,6 +90,61 @@ func TestL2TPFullPipeline(t *testing.T) {
 				if len(answer.Answer) != 1 || answer.Answer[0].(*dns.A).A.String() != "192.0.2.123" {
 					t.Fatalf("%s DNS wrong answer: %v", network, answer)
 				}
+			}
+			if user == "alice" {
+				access, _ := c.GetInstance().Inbound().Get("vpn")
+				type dnsChannel struct {
+					client *dns.Client
+					conn   *dns.Conn
+				}
+				var channels []dnsChannel
+				query := new(dns.Msg)
+				query.SetQuestion("l2tp.test.", dns.TypeA)
+				for _, network := range []string{"tcp", "udp"} {
+					dnsClient := &dns.Client{Net: network, Timeout: 5 * time.Second}
+					dnsConn, err := dnsClient.Dial(net.JoinHostPort(result.DNS[0].String(), "53"))
+					if err != nil {
+						t.Fatal(err)
+					}
+					defer dnsConn.Close()
+					if _, _, err = dnsClient.ExchangeWithConn(query, dnsConn); err != nil {
+						t.Fatal(err)
+					}
+					channels = append(channels, dnsChannel{dnsClient, dnsConn})
+				}
+				apply := func(raw string) {
+					t.Helper()
+					update, err := c.PreparePolicy([]byte(raw))
+					if err != nil {
+						t.Fatal(err)
+					}
+					defer update.Abort()
+					update.Commit()
+				}
+				updatedDNS := strings.ReplaceAll(cfg, "192.0.2.123", "192.0.2.124")
+				apply(updatedDNS)
+				for _, channel := range channels {
+					answer, _, err := channel.client.ExchangeWithConn(query, channel.conn)
+					if err != nil || len(answer.Answer) != 1 || answer.Answer[0].(*dns.A).A.String() != "192.0.2.124" {
+						t.Fatalf("existing %s DNS connection did not use new policy: %v %v", channel.client.Net, answer, err)
+					}
+				}
+				updatedRoute := strings.ReplaceAll(updatedDNS, fmt.Sprintf(`"override_port":%d`, port(a)), fmt.Sprintf(`"override_port":%d`, port(b)))
+				apply(updatedRoute)
+				response, err := client.Get("http://198.18.0.1/")
+				if err != nil {
+					t.Fatal(err)
+				}
+				body, err := io.ReadAll(response.Body)
+				response.Body.Close()
+				if err != nil || string(body) != "bob-exit" {
+					t.Fatalf("route change required a redial: %q %v", body, err)
+				}
+				stillAccess, _ := c.GetInstance().Inbound().Get("vpn")
+				if stillAccess != access {
+					t.Fatal("policy update recreated L2TP listener")
+				}
+				apply(cfg)
 			}
 			if n := c.KickUserSessions(user); n != 1 {
 				t.Fatalf("kicked %d sessions", n)

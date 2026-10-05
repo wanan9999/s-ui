@@ -42,6 +42,11 @@ func (c *Core) GetCtx() context.Context {
 	return c.ctx
 }
 
+func (c *Core) ValidateConfig(raw []byte) error {
+	var options option.Options
+	return options.UnmarshalJSONContext(c.ctx, raw)
+}
+
 func (c *Core) GetInstance() *Box {
 	c.mu.RLock()
 	defer c.mu.RUnlock()

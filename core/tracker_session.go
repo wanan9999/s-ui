@@ -152,7 +152,6 @@ func (t *SessionTracker) newSession(metadata adapter.InboundContext, matchedRule
 		readCounter = append(readCounter, counter.read)
 		writeCounter = append(writeCounter, counter.write)
 	}
-	t.sessions[session.ID] = session
 	return session, readCounter, writeCounter
 }
 
@@ -169,7 +168,15 @@ func (t *SessionTracker) RoutedConnection(ctx context.Context, conn net.Conn, me
 		tracker:      t,
 		session:      session,
 	}
+	tracked.policy, _ = ctx.Value(policyContextKey{}).(*policyGeneration)
+	t.access.Lock()
 	session.closer = tracked
+	t.sessions[session.ID] = session
+	reject := tracked.policy != nil && tracked.policy.track(tracked, session.Outbound)
+	t.access.Unlock()
+	if reject {
+		_ = tracked.Close()
+	}
 	return tracked
 }
 
@@ -180,7 +187,15 @@ func (t *SessionTracker) RoutedPacketConnection(ctx context.Context, conn N.Pack
 		tracker:    t,
 		session:    session,
 	}
+	tracked.policy, _ = ctx.Value(policyContextKey{}).(*policyGeneration)
+	t.access.Lock()
 	session.closer = tracked
+	t.sessions[session.ID] = session
+	reject := tracked.policy != nil && tracked.policy.track(tracked, session.Outbound)
+	t.access.Unlock()
+	if reject {
+		_ = tracked.Close()
+	}
 	return tracked
 }
 
@@ -311,13 +326,19 @@ type sessionConn struct {
 	tracker   *SessionTracker
 	session   *Session
 	closeOnce sync.Once
+	policy    *policyGeneration
+	closeErr  error
 }
 
 func (c *sessionConn) Close() error {
 	c.closeOnce.Do(func() {
 		c.tracker.leave(c.session)
+		c.closeErr = c.ExtendedConn.Close()
+		if c.policy != nil {
+			c.policy.untrack(c)
+		}
 	})
-	return c.ExtendedConn.Close()
+	return c.closeErr
 }
 
 func (c *sessionConn) Upstream() any {
@@ -337,13 +358,19 @@ type sessionPacketConn struct {
 	tracker   *SessionTracker
 	session   *Session
 	closeOnce sync.Once
+	policy    *policyGeneration
+	closeErr  error
 }
 
 func (c *sessionPacketConn) Close() error {
 	c.closeOnce.Do(func() {
 		c.tracker.leave(c.session)
+		c.closeErr = c.PacketConn.Close()
+		if c.policy != nil {
+			c.policy.untrack(c)
+		}
 	})
-	return c.PacketConn.Close()
+	return c.closeErr
 }
 
 func (c *sessionPacketConn) Upstream() any {

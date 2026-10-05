@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/wanan9999/s-ui/core"
@@ -11,10 +12,12 @@ import (
 	"github.com/wanan9999/s-ui/database/model"
 	"github.com/wanan9999/s-ui/logger"
 	"github.com/wanan9999/s-ui/util/common"
+
+	"gorm.io/gorm"
 )
 
 var (
-	LastUpdate int64
+	LastUpdate atomic.Int64
 	corePtr    *core.Core
 
 	// Serialises whole start/stop/restart/maintenance sequences, not just a
@@ -76,25 +79,29 @@ func (s *ConfigService) GetConfig(data string) (*[]byte, error) {
 			return nil, err
 		}
 	}
+	return s.getConfigAt(database.GetDB(), data)
+}
+
+func (s *ConfigService) getConfigAt(db *gorm.DB, data string) (*[]byte, error) {
 	singboxConfig := SingBoxConfig{}
-	err = json.Unmarshal([]byte(data), &singboxConfig)
+	err := json.Unmarshal([]byte(data), &singboxConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	singboxConfig.Inbounds, err = s.InboundService.GetAllConfig(database.GetDB())
+	singboxConfig.Inbounds, err = s.InboundService.GetAllConfig(db)
 	if err != nil {
 		return nil, err
 	}
-	singboxConfig.Outbounds, err = s.OutboundService.GetAllConfig(database.GetDB())
+	singboxConfig.Outbounds, err = s.OutboundService.GetAllConfig(db)
 	if err != nil {
 		return nil, err
 	}
-	singboxConfig.Services, err = s.ServicesService.GetAllConfig(database.GetDB())
+	singboxConfig.Services, err = s.ServicesService.GetAllConfig(db)
 	if err != nil {
 		return nil, err
 	}
-	singboxConfig.Endpoints, err = s.EndpointService.GetAllConfig(database.GetDB())
+	singboxConfig.Endpoints, err = s.EndpointService.GetAllConfig(db)
 	if err != nil {
 		return nil, err
 	}
@@ -303,37 +310,6 @@ func (s *ConfigService) RestartCore() error {
 	return s.startCoreLocked(true)
 }
 
-func (s *ConfigService) restartCoreWithConfig(config json.RawMessage) error {
-	if !lifecycleMu.TryLock() {
-		return nil
-	}
-	defer lifecycleMu.Unlock()
-
-	if s.inMaintenance() {
-		// The config is saved either way; it takes effect when the core is
-		// started again.
-		return nil
-	}
-
-	if corePtr.GetInstance() != nil {
-		if err := corePtr.Stop(); err != nil {
-			logger.Error("restart sing-box err (stop):", err.Error())
-			return err
-		}
-	}
-	rawConfig, err := s.GetConfig(string(config))
-	if err != nil {
-		logger.Error("restart sing-box err (get config):", err.Error())
-		return err
-	}
-	if err := corePtr.Start(*rawConfig); err != nil {
-		logger.Error("restart sing-box err (start):", err.Error())
-		return err
-	}
-	logger.Info("sing-box restarted with new config")
-	return nil
-}
-
 // SetMaintenance takes the core out of service, or puts it back. The setting is
 // written first so the watchdog will not restart what was just stopped, and the
 // blocking lock means an in-flight start has finished before we look at
@@ -381,18 +357,18 @@ func (s *ConfigService) CheckOutbound(tag string, link string) core.CheckOutboun
 	return corePtr.CheckOutbound(tag, link)
 }
 
-func (s *ConfigService) Save(obj string, act string, data json.RawMessage, initUsers string, loginUser string, hostname string) ([]string, error) {
-	var err error
-	var objs []string = []string{obj}
-	// Set when the config object changed. The restart waits for the commit, or
-	// a later rollback leaves the core running a config that was never saved.
-	var restartWith json.RawMessage
-
-	db := database.GetDB()
-	tx := db.Begin()
+func (s *ConfigService) Save(obj string, act string, data json.RawMessage, initUsers string, loginUser string, hostname string) (objs []string, err error) {
+	lifecycleMu.Lock()
+	defer lifecycleMu.Unlock()
+	if obj == "config" || obj == "outbounds" {
+		return s.savePolicy(obj, act, data, loginUser)
+	}
+	objs = []string{obj}
+	tx := database.GetDB().Begin()
+	if tx.Error != nil {
+		return nil, tx.Error
+	}
 	defer func() {
-		// A panic leaves err nil, which would otherwise commit a half-applied
-		// transaction while gin tells the operator the save failed.
 		if r := recover(); r != nil {
 			tx.Rollback()
 			panic(r)
@@ -401,26 +377,12 @@ func (s *ConfigService) Save(obj string, act string, data json.RawMessage, initU
 			tx.Rollback()
 			return
 		}
-		if cErr := tx.Commit().Error; cErr != nil {
-			logger.Error("failed to commit config save: ", cErr)
+		if err = tx.Commit().Error; err != nil {
 			return
 		}
-		if restartWith != nil {
-			// Detached: a restart takes seconds and this is an HTTP handler.
-			// The recover is required -- a panic here is outside gin's reach.
-			go func() {
-				defer func() {
-					if r := recover(); r != nil {
-						logger.Error("panic while restarting core with new config: ", r)
-					}
-				}()
-				_ = s.restartCoreWithConfig(restartWith)
-			}()
-			return
-		}
-		// Try to start core if it is not running
+		LastUpdate.Store(time.Now().Unix())
 		if !corePtr.IsRunning() {
-			s.StartCore()
+			err = s.startCoreLocked(false)
 		}
 	}()
 
@@ -441,20 +403,10 @@ func (s *ConfigService) Save(obj string, act string, data json.RawMessage, initU
 	case "inbounds":
 		err = s.InboundService.Save(tx, act, data, initUsers, hostname)
 		objs = append(objs, "clients")
-	case "outbounds":
-		err = s.OutboundService.Save(tx, act, data)
 	case "services":
 		err = s.ServicesService.Save(tx, act, data)
 	case "endpoints":
 		err = s.EndpointService.Save(tx, act, data)
-	case "config":
-		err = s.SettingService.SaveConfig(tx, data)
-		if err != nil {
-			return nil, err
-		}
-		configData := make(json.RawMessage, len(data))
-		copy(configData, data)
-		restartWith = configData
 	case "settings":
 		err = s.SettingService.Save(tx, data)
 	default:
@@ -476,8 +428,6 @@ func (s *ConfigService) Save(obj string, act string, data json.RawMessage, initU
 		return nil, err
 	}
 
-	LastUpdate = time.Now().Unix()
-
 	return objs, nil
 }
 
@@ -489,16 +439,16 @@ func (s *ConfigService) CheckChanges(lu string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if LastUpdate == 0 {
+	if LastUpdate.Load() == 0 {
 		db := database.GetDB()
 		var count int64
 		err := db.Model(model.Changes{}).Where("date_time > ?", intLu).Count(&count).Error
 		if err == nil {
-			LastUpdate = time.Now().Unix()
+			LastUpdate.Store(time.Now().Unix())
 		}
 		return count > 0, err
 	}
-	return LastUpdate > intLu, nil
+	return LastUpdate.Load() > intLu, nil
 }
 
 func (s *ConfigService) GetChanges(actor string, chngKey string, count string) []model.Changes {

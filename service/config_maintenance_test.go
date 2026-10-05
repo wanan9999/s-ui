@@ -53,10 +53,16 @@ func TestRestartCoreRefusedInMaintenance(t *testing.T) {
 
 // A base config change restarts the core with the new config. In maintenance
 // the config is still saved; it just does not take effect yet.
-func TestRestartCoreWithConfigStopsAtMaintenance(t *testing.T) {
-	s := maintenanceService(t, true)
-	if err := s.restartCoreWithConfig([]byte(`{"log":{"level":"info"}}`)); err != nil {
-		t.Fatalf("restartCoreWithConfig: %v", err)
+func TestConfigSaveInMaintenanceDoesNotStartCore(t *testing.T) {
+	s := lifecycleService(t)
+	if err := s.SettingService.SetMaintenance(true); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Save("config", "edit", []byte(`{"log":{"level":"info"}}`), "", "test", ""); err != nil {
+		t.Fatalf("save config in maintenance: %v", err)
+	}
+	if corePtr.IsRunning() {
+		t.Fatal("saving config exited maintenance")
 	}
 }
 

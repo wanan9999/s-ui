@@ -63,6 +63,8 @@ type Box struct {
 	httpClientService   adapter.LifecycleService
 	internalService     []adapter.LifecycleService
 	sessionTracker      *SessionTracker
+	policy              *policyRouter
+	applied             option.Options
 	done                chan struct{}
 }
 
@@ -118,7 +120,7 @@ func NewBox(options Options) (*Box, error) {
 	if ctx == nil {
 		ctx = context.Background()
 	}
-	ctx = service.ContextWithDefaultRegistry(ctx)
+	ctx = service.ExtendContext(service.ContextWithDefaultRegistry(ctx))
 
 	endpointRegistry := service.FromContext[adapter.EndpointRegistry](ctx)
 	inboundRegistry := service.FromContext[adapter.InboundRegistry](ctx)
@@ -226,6 +228,10 @@ func NewBox(options Options) (*Box, error) {
 		return nil, E.Cause(err, "initialize DNS router")
 	}
 	service.MustRegister[adapter.DNSRouter](ctx, dnsRouter)
+	initialPolicy := &policyRuntime{ctx: ctx, dns: dnsRouter, transports: dnsTransportManager, outbound: outboundManager, logger: logFactory.Logger()}
+	initialPolicy.generation = &policyGeneration{runtime: initialPolicy}
+	initialDNS := &policyDNS{DNSRouter: dnsRouter, generation: initialPolicy.generation}
+	service.MustRegister[adapter.DNSRouter](ctx, initialDNS)
 	service.MustRegister[adapter.DNSRuleSetUpdateValidator](ctx, dnsRouter)
 	networkManager, err := route.NewNetworkManager(ctx, logFactory.NewLogger("network"), routeOptions, dnsOptions)
 	if err != nil {
@@ -239,6 +245,18 @@ func NewBox(options Options) (*Box, error) {
 	service.MustRegister[adapter.HTTPClientManager](ctx, httpClientManager)
 	httpClientService := adapter.LifecycleService(httpClientManager)
 	router := route.NewRouter(ctx, logFactory, routeOptions, dnsOptions)
+	initialPolicy.router = router
+	initialPolicy.network = networkManager
+	initialPolicy.connection = connectionManager
+	initialPolicy.http = httpClientService
+	// The initial network manager also belongs to long-lived access listeners.
+	// Box closes it after the listeners; subsequent policy managers are private.
+	initialPolicy.owned = []adapter.Lifecycle{dnsTransportManager, dnsRouter, connectionManager, outboundManager, httpClientService, router}
+	dispatcher := &policyRouter{Router: router, current: initialPolicy.generation, all: []*policyGeneration{initialPolicy.generation}}
+	initialDNS.policy = dispatcher
+	accessCtx := service.ExtendContext(ctx)
+	service.MustRegister[adapter.Router](accessCtx, dispatcher)
+	service.MustRegister[adapter.DNSRouter](accessCtx, &accessDNS{DNSRouter: dnsRouter, policy: dispatcher})
 	service.MustRegister[adapter.Router](ctx, router)
 	err = router.Initialize(routeOptions.Rules, routeOptions.RuleSet)
 	if err != nil {
@@ -319,8 +337,8 @@ func NewBox(options Options) (*Box, error) {
 			tag = F.ToString(i)
 		}
 		err = inboundManager.Create(
-			ctx,
-			router,
+			accessCtx,
+			dispatcher,
 			logFactory.NewLogger(F.ToString("inbound/", inboundOptions.Type, "[", tag, "]")),
 			tag,
 			inboundOptions.Type,
@@ -489,6 +507,8 @@ func NewBox(options Options) (*Box, error) {
 		logger:              logFactory.Logger(),
 		internalService:     internalServices,
 		sessionTracker:      sessionTracker,
+		policy:              dispatcher,
+		applied:             options.Options,
 		done:                make(chan struct{}),
 	}, nil
 }
@@ -629,12 +649,6 @@ func (s *Box) Close() error {
 		{"inbound", s.inbound},
 		{"certificate-provider", s.certificateProvider},
 		{"endpoint", s.endpoint},
-		{"outbound", s.outbound},
-		{"router", s.router},
-		{"connection", s.connection},
-		{"dns-router", s.dnsRouter},
-		{"dns-transport", s.dnsTransport},
-		{"network", s.network},
 	} {
 		done := adapter.LogElapsed(s.logger, "close ", closeItem.name)
 		err = E.Append(err, closeItem.service.Close(), func(err error) error {
@@ -642,14 +656,8 @@ func (s *Box) Close() error {
 		})
 		done()
 	}
-	if s.httpClientService != nil {
-		s.logger.Trace("close ", s.httpClientService.Name())
-		startTime := time.Now()
-		err = E.Append(err, s.httpClientService.Close(), func(err error) error {
-			return E.Cause(err, "close ", s.httpClientService.Name())
-		})
-		s.logger.Trace("close ", s.httpClientService.Name(), " completed (", F.Seconds(time.Since(startTime).Seconds()), "s)")
-	}
+	err = E.Append(err, s.policy.shutdown(), func(err error) error { return E.Cause(err, "close policies") })
+	err = E.Append(err, s.network.Close(), func(err error) error { return E.Cause(err, "close network") })
 	for _, lifecycleService := range s.internalService {
 		done := adapter.LogElapsed(s.logger, "close ", lifecycleService.Name())
 		err = E.Append(err, lifecycleService.Close(), func(err error) error {
@@ -670,7 +678,7 @@ func (s *Box) Network() adapter.NetworkManager {
 }
 
 func (s *Box) Router() adapter.Router {
-	return s.router
+	return s.policy
 }
 
 func (s *Box) Inbound() adapter.InboundManager {
@@ -678,7 +686,9 @@ func (s *Box) Inbound() adapter.InboundManager {
 }
 
 func (s *Box) Outbound() adapter.OutboundManager {
-	return s.outbound
+	s.policy.mu.Lock()
+	defer s.policy.mu.Unlock()
+	return s.policy.current.runtime.outbound
 }
 
 func (s *Box) Endpoint() adapter.EndpointManager {
