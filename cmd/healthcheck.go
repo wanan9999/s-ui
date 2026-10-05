@@ -28,14 +28,16 @@ const healthCheckTimeout = 2 * time.Second
 // depending on whether a certificate is configured, and a check that assumed
 // one of them would fail on the other.
 func healthCheck() {
-	// OpenDB, not InitDB: this runs every 30 seconds beside the live panel, and
-	// InitDB migrates and writes, so it waited on the panel's write lock for up
-	// to the busy timeout and the container went unhealthy (#1274). Under WAL a
-	// plain read does not wait on a writer.
-	if err := database.OpenDB(config.GetDBPath()); err != nil {
+	if err := database.OpenReadOnlyDB(config.GetDBPath()); err != nil {
 		fmt.Println("healthcheck: unable to open the database:", err)
 		os.Exit(1)
 	}
+	sqlDB, err := database.GetDB().DB()
+	if err != nil {
+		fmt.Println("healthcheck: unable to access the database:", err)
+		os.Exit(1)
+	}
+	defer sqlDB.Close()
 
 	settingService := service.SettingService{}
 	port, err := settingService.GetPort()

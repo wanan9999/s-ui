@@ -48,11 +48,22 @@ jobs:
           docker run --rm --entrypoint /app/sui sui:test -v
           trap 'docker logs sui-smoke; docker rm -f sui-smoke' EXIT
           docker run -d --name sui-smoke sui:test
-          for attempt in $(seq 1 30); do
-            if docker exec sui-smoke ./sui healthcheck; then exit 0; fi
-            sleep 2
+          for startup in 1 2; do
+            ready=false
+            for attempt in $(seq 1 30); do
+              if [ "$(docker inspect -f '{{.State.Running}}' sui-smoke)" != true ]; then
+                docker inspect -f '{{json .State}}' sui-smoke
+                exit 1
+              fi
+              if docker exec sui-smoke ./sui healthcheck; then
+                ready=true
+                break
+              fi
+              sleep 2
+            done
+            if [ "$ready" != true ]; then exit 1; fi
+            if [ "$startup" = 1 ]; then docker restart sui-smoke; fi
           done
-          exit 1
       - name: 发布双架构镜像
         if: inputs.publish || startsWith(github.ref, 'refs/tags/v')
         uses: docker/build-push-action@v7

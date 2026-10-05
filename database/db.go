@@ -3,8 +3,10 @@ package database
 import (
 	"encoding/json"
 	"log"
+	"net/url"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -17,6 +19,29 @@ import (
 )
 
 var db *gorm.DB
+
+// OpenReadOnlyDB is for probes running beside the server. It must not create a
+// database, change file permissions, or negotiate journal mode during startup.
+func OpenReadOnlyDB(dbPath string) error {
+	absolute, err := filepath.Abs(dbPath)
+	if err != nil {
+		return err
+	}
+	u := url.URL{Scheme: "file", Path: "/" + strings.TrimPrefix(filepath.ToSlash(absolute), "/")}
+	u.RawQuery = "mode=ro&_pragma=busy_timeout(1000)"
+	reader, err := gorm.Open(sqlite.Open(u.String()), &gorm.Config{Logger: logger.Discard})
+	if err != nil {
+		return err
+	}
+	sqlDB, err := reader.DB()
+	if err != nil {
+		return err
+	}
+	sqlDB.SetMaxOpenConns(1)
+	sqlDB.SetMaxIdleConns(1)
+	db = reader
+	return nil
+}
 
 func initUser() error {
 	var count int64
