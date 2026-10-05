@@ -474,8 +474,8 @@ github.com/ugorji/go/codec v1.3.1/go.mod h1:pRBVtBSKl77K30Bv8R2P+cLSGaTtex6fsA2W
 github.com/vishvananda/netns v0.0.0-20200728191858-db3c7e526aae/go.mod h1:DD4vA1DwXk04H54A1oHXtwZmA0grkVMdPxx/VGLCah0=
 github.com/vishvananda/netns v0.0.5 h1:DfiHV+j8bA32MFM7bfEunvT8IAqQ/NzSJHtcmW5zdEY=
 github.com/vishvananda/netns v0.0.5/go.mod h1:SpkAiCQRtJ6TvvxPnOSyH3BMl6unz3xZlaprSwhNNJM=
-github.com/wanan9999/veepin v0.0.0-20261005024620-8fdebe53c993 h1:6eirIzSJ+ZIMgdv0I1avM15AgugUhO6CDV3T2mHko08=
-github.com/wanan9999/veepin v0.0.0-20261005024620-8fdebe53c993/go.mod h1:nR2/vT9hbyUX8tBjzPB5Y0XQ6j3IbBN6EtfZ0JYqNo0=
+github.com/wanan9999/veepin v0.0.0-20261005034024-b36708a3a24d h1:sCqPkCl98BpRTl7/5QBlS8b125a91/I6a52GtasPbHU=
+github.com/wanan9999/veepin v0.0.0-20261005034024-b36708a3a24d/go.mod h1:nR2/vT9hbyUX8tBjzPB5Y0XQ6j3IbBN6EtfZ0JYqNo0=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 github.com/youmark/pkcs8 v0.0.0-20240726163527-a2c0da244d78 h1:ilQV1hzziu+LLM3zUTJ0trRztfwgjqKnBWNtSRkbmwM=
