@@ -24,7 +24,7 @@ require (
 	github.com/sagernet/sing-tun v0.9.3
 	github.com/sagernet/sing-vmess v0.2.8
 	github.com/shirou/gopsutil/v4 v4.26.8
-	github.com/wanan9999/veepin v0.0.0-20261005034024-b36708a3a24d
+	github.com/wanan9999/veepin v0.0.0-20261005034428-70e1d01ad0d4
 	golang.org/x/crypto v0.57.0
 	golang.zx2c4.com/wireguard/wgctrl v0.0.0-20241231184526-a9ab2273dd10
 	gopkg.in/yaml.v3 v3.0.1
