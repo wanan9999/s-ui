@@ -1,14 +1,20 @@
 name: 发布 Linux 镜像
 
 on:
-  push:
-    tags: ['v*']
   workflow_dispatch:
     inputs:
+      tag:
+        description: '镜像版本，例如 v1.6.4（基于所选分支的当前提交）'
+        required: true
+        type: string
       publish:
         description: '同时发布 GHCR 镜像'
         type: boolean
         default: false
+
+concurrency:
+  group: docker-${{ inputs.tag }}
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -19,6 +25,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+      - name: 设置镜像版本
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: printf '%s\n' "${RELEASE_TAG#v}" > config/version
 
       - uses: docker/setup-qemu-action@v4
 
@@ -36,7 +46,7 @@ jobs:
           images: ghcr.io/wanan9999/s-ui
           tags: |
             type=raw,value=latest
-            type=ref,event=tag
+            type=raw,value=${{ inputs.tag }}
 
       - name: 构建并加载测试镜像
         uses: docker/build-push-action@v7
@@ -72,7 +82,7 @@ jobs:
           done
 
       - name: 发布双架构镜像
-        if: inputs.publish || startsWith(github.ref, 'refs/tags/v')
+        if: inputs.publish
         uses: docker/build-push-action@v7
         with:
           context: .

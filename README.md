@@ -86,3 +86,13 @@ Docker 使用仓库中的 [docker-compose.yml](docker-compose.yml)，采用 Linu
 基于 [alireza0/s-ui](https://github.com/alireza0/s-ui)；前端基于 [alireza0/s-ui-frontend](https://github.com/alireza0/s-ui-frontend) 的 `f859e16953cd733293618f626cc19b8466e00fd3`，保留原作者版权与 GPL-3.0 许可。
 
 L2TP/IPsec 使用 [wanan9999/veepin](https://github.com/wanan9999/veepin)（MIT，上游为 xen0bit/veepin）。
+
+## 手动发布
+
+提交代码或推送标签不会自动运行流水线。在 GitHub **Actions** 选择：
+
+- **Linux 构建与发布**：点 **Run workflow**，选择分支，填写 tag（如 `v1.6.4`），测试通过后构建并发布 Release。
+- **发布 Linux 镜像**：选择分支并填写 tag；默认只构建和验证，勾选“同时发布 GHCR 镜像”后发布该版本及 `latest`。
+- **Test**：手动运行测试。
+
+产物版本与填写的 tag 一致。重试旧版本时选择对应 tag 运行。

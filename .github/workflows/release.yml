@@ -1,24 +1,31 @@
 name: Linux 构建与发布
 on:
-  push:
-    branches: [main]
-    tags: ['v*']
   workflow_dispatch:
+    inputs:
+      tag:
+        description: '发布版本，例如 v1.6.4（基于所选分支的当前提交）'
+        required: true
+        type: string
+concurrency:
+  group: release-${{ inputs.tag }}
+  cancel-in-progress: false
 permissions:
   contents: read
 jobs:
   test:
-    if: github.event_name != 'push' || startsWith(github.ref, 'refs/tags/v')
     uses: ./.github/workflows/test.yml
   build:
     needs: test
-    if: ${{ !cancelled() && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v7
+      - name: 设置构建版本
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: printf '%s\n' "${RELEASE_TAG#v}" > config/version
       - uses: actions/setup-go@v7
         with:
           go-version-file: go.mod
@@ -48,11 +55,7 @@ jobs:
           name: s-ui-linux-${{ matrix.arch }}
           path: s-ui-linux-*.tar.gz
   publish:
-    if: startsWith(github.ref, 'refs/tags/v')
     needs: build
-    concurrency:
-      group: release-${{ github.ref }}
-      cancel-in-progress: false
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -64,11 +67,12 @@ jobs:
       - name: 发布
         env:
           GH_TOKEN: ${{ github.token }}
-          GH_REPO: wanan9999/s-ui
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
         run: |
           set -euo pipefail
           sha256sum s-ui-linux-*.tar.gz > SHA256SUMS
-          if ! gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
-            gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes
+          if ! gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            gh release create "$RELEASE_TAG" --target "$GITHUB_SHA" --generate-notes
           fi
-          gh release upload "$GITHUB_REF_NAME" s-ui-linux-*.tar.gz SHA256SUMS --clobber
+          gh release upload "$RELEASE_TAG" s-ui-linux-*.tar.gz SHA256SUMS --clobber

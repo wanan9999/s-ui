@@ -1,7 +1,6 @@
 name: Test
 
-# Run manually or as a release gate. Ordinary main pushes skip the test job
-# in release.yml and only build artifacts.
+# Run manually or as a gate for a manually started release.
 on:
   workflow_dispatch:
   workflow_call:
